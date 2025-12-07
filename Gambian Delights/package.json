@@ -1,0 +1,17 @@
+{
+  "name": "gambian-delights",
+  "version": "1.0.0",
+  "description": "Gambian Delights catering website with Stripe payment integration",
+  "main": "index.html",
+  "scripts": {
+    "dev": "netlify dev",
+    "build": "echo 'No build step required'"
+  },
+  "dependencies": {
+    "stripe": "^14.0.0"
+  },
+  "devDependencies": {
+    "netlify-cli": "^17.0.0"
+  }
+}
+

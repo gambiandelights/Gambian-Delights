@@ -1,0 +1,1413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Large Event Catering - Gambian Delights</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://js.stripe.com/v3/"></script>
+    <style>
+        :root {
+            --primary: #8B4513;
+            --primary-dark: #6B3410;
+            --secondary: #A0522D;
+            --accent: #CD853F;
+            --dark: #3E2723;
+            --light: #FFF8F0;
+            --cream: #F5F1E8;
+            --gray: #F5F1E8;
+            --text: #3E2723;
+            --text-light: #5D4037;
+            --success: #4CAF50;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: var(--cream);
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        .language-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            display: flex;
+            gap: 0.5rem;
+            background: rgba(255,255,255,0.95);
+            padding: 0.5rem;
+            border-radius: 50px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .lang-btn {
+            padding: 0.5rem 1rem;
+            border: 2px solid var(--primary);
+            background: white;
+            color: var(--primary);
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            font-size: 0.9rem;
+        }
+
+        .lang-btn.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #8B4513 0%, #A0522D 50%, #6B3410 100%);
+            color: white;
+            padding: 2rem 0;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .logo-link {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            text-decoration: none;
+            color: white;
+        }
+
+        .logo-link img {
+            height: 60px;
+            border-radius: 10px;
+        }
+
+        .back-link {
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            padding: 0.5rem 1rem;
+            border: 2px solid white;
+            border-radius: 25px;
+            transition: all 0.3s;
+        }
+
+        .back-link:hover {
+            background: white;
+            color: var(--primary);
+        }
+
+        .hero-section {
+            background: linear-gradient(135deg, rgba(139, 69, 19, 0.1), rgba(160, 82, 45, 0.1));
+            padding: 4rem 0;
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .hero-section h1 {
+            font-size: 3rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+            font-weight: 800;
+        }
+
+        .hero-section p {
+            font-size: 1.3rem;
+            color: var(--text-light);
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .info-banner {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 2rem;
+            border-radius: 20px;
+            margin: 2rem 0;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+        }
+
+        .info-banner h2 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .info-banner ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .info-banner li {
+            padding: 0.5rem 0;
+            font-size: 1.1rem;
+        }
+
+        .info-banner li:before {
+            content: "✓ ";
+            font-weight: bold;
+            margin-right: 0.5rem;
+        }
+
+        .pricing-tiers {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin: 3rem 0;
+        }
+
+        .tier-card {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            border: 3px solid var(--cream);
+            transition: all 0.3s;
+        }
+
+        .tier-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-5px);
+            box-shadow: 0 15px 50px rgba(139, 69, 19, 0.2);
+        }
+
+        .tier-card h3 {
+            color: var(--primary);
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+        }
+
+        .tier-card .price {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--primary);
+            margin: 1rem 0;
+        }
+
+        .tier-card .price-note {
+            font-size: 0.9rem;
+            color: var(--text-light);
+            margin-bottom: 1.5rem;
+        }
+
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin: 3rem 0;
+        }
+
+        .menu-item-card {
+            background: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            border: 2px solid var(--cream);
+            transition: all 0.3s;
+        }
+
+        .menu-item-card:hover {
+            border-color: var(--primary);
+            box-shadow: 0 10px 30px rgba(139, 69, 19, 0.2);
+        }
+
+        .menu-item-card h3 {
+            color: var(--primary);
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .menu-item-card .description {
+            color: var(--text-light);
+            margin-bottom: 1rem;
+            font-size: 0.95rem;
+        }
+
+        .menu-item-card .price-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--cream);
+        }
+
+        .price-per-person {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .bulk-discount {
+            background: var(--success);
+            color: white;
+            padding: 0.3rem 0.8rem;
+            border-radius: 15px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .tips-section {
+            background: white;
+            border-radius: 20px;
+            padding: 3rem;
+            margin: 3rem 0;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        }
+
+        .tips-section h2 {
+            color: var(--primary);
+            font-size: 2.5rem;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .tips-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .tip-card {
+            background: var(--cream);
+            padding: 2rem;
+            border-radius: 15px;
+            border-left: 5px solid var(--primary);
+        }
+
+        .tip-card h3 {
+            color: var(--primary);
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+        }
+
+        .tip-card ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .tip-card li {
+            padding: 0.5rem 0;
+            padding-left: 1.5rem;
+            position: relative;
+        }
+
+        .tip-card li:before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            color: var(--primary);
+            font-weight: bold;
+        }
+
+        .cta-section {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 4rem 2rem;
+            border-radius: 20px;
+            text-align: center;
+            margin: 3rem 0;
+        }
+
+        .cta-section h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .cta-section p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+
+        .cta-button {
+            display: inline-block;
+            background: white;
+            color: var(--primary);
+            padding: 1.2rem 3rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 1.2rem;
+            transition: all 0.3s;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+        }
+
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        .contact-info {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            margin: 2rem 0;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .contact-info h3 {
+            color: var(--primary);
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .contact-info a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.2rem;
+        }
+
+        @media (max-width: 768px) {
+            .hero-section h1 {
+                font-size: 2rem;
+            }
+
+            .pricing-tiers,
+            .menu-grid,
+            .tips-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .language-toggle {
+                top: 10px;
+                right: 10px;
+            }
+
+            #largeEventForm {
+                grid-template-columns: 1fr !important;
+            }
+        }
+
+        [data-lang] {
+            display: none;
+        }
+
+        [data-lang].active {
+            display: block;
+        }
+
+        [data-lang].active.inline {
+            display: inline;
+        }
+    </style>
+</head>
+<body>
+    <div class="language-toggle">
+        <button class="lang-btn active" onclick="switchLanguage('en')">EN</button>
+        <button class="lang-btn" onclick="switchLanguage('no')">NO</button>
+    </div>
+
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <a href="index.html" class="logo-link">
+                    <img src="IMG_2553.png" alt="Gambian Delights Logo">
+                    <h1>Gambian Delights</h1>
+                </a>
+                <a href="index.html" class="back-link">← Back to Home</a>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="hero-section">
+            <h1>
+                <span data-lang="en" class="active">Book Event Catering</span>
+                <span data-lang="no">Bestill Arrangementscatering</span>
+            </h1>
+            <p>
+                <span data-lang="en" class="active">Perfect for weddings, corporate events, parties, and gatherings of 100-200+ people</span>
+                <span data-lang="no">Perfekt for bryllup, bedriftsarrangementer, fester og sammenkomster med 100-200+ personer</span>
+            </p>
+        </div>
+
+        <div class="info-banner">
+            <h2>
+                <span data-lang="en" class="active">Why Choose Us for Book Events?</span>
+                <span data-lang="no">Hvorfor velge oss for bestill arrangementer?</span>
+            </h2>
+            <ul>
+                <li>
+                    <span data-lang="en" class="active">Experienced in handling 100-200+ person events</span>
+                    <span data-lang="no">Erfaring med å håndtere arrangementer med 100-200+ personer</span>
+                </li>
+                <li>
+                    <span data-lang="en" class="active">Bulk pricing discounts (5-15% off for large orders)</span>
+                    <span data-lang="no">Bulkpriser (5-15% rabatt for store bestillinger)</span>
+                </li>
+                <li>
+                    <span data-lang="en" class="active">Flexible menu options to suit your budget</span>
+                    <span data-lang="no">Fleksible menyalternativer som passer ditt budsjett</span>
+                </li>
+                <li>
+                    <span data-lang="en" class="active">Professional setup and service</span>
+                    <span data-lang="no">Profesjonell oppsett og service</span>
+                </li>
+                <li>
+                    <span data-lang="en" class="active">Dietary accommodations (vegan, gluten-free options)</span>
+                    <span data-lang="no">Kosttilpasninger (veganske, glutenfrie alternativer)</span>
+                </li>
+                <li>
+                    <span data-lang="en" class="active">Minimum 14 days advance booking required</span>
+                    <span data-lang="no">Minimum 14 dagers forhåndsbestilling påkrevd</span>
+                </li>
+            </ul>
+        </div>
+
+        <div class="pricing-tiers">
+            <div class="tier-card">
+                <h3>
+                    <span data-lang="en" class="active">100-120 People</span>
+                    <span data-lang="no">100-120 Personer</span>
+                </h3>
+                <div class="price">85-90 kr<span style="font-size: 1rem;">/person</span></div>
+                <div class="price-note">
+                    <span data-lang="en" class="active">5% bulk discount</span>
+                    <span data-lang="no">5% bulkrabatt</span>
+                </div>
+                <div style="background: var(--cream); padding: 1rem; border-radius: 10px; margin: 1rem 0; text-align: center;">
+                    <div style="font-size: 0.9rem; color: var(--text-light); margin-bottom: 0.5rem;">
+                        <span data-lang="en" class="active">Example Total:</span>
+                        <span data-lang="no">Eksempel Total:</span>
+                    </div>
+                    <div style="font-size: 1.5rem; font-weight: 700; color: var(--primary);">
+                        100 people = <strong>8,750 kr</strong>
+                    </div>
+                    <div style="font-size: 0.85rem; color: var(--text-light); margin-top: 0.5rem;">
+                        <span data-lang="en" class="active">120 people = 10,500 kr</span>
+                        <span data-lang="no">120 personer = 10,500 kr</span>
+                    </div>
+                </div>
+                <p>
+                    <span data-lang="en" class="active">Perfect for medium-sized events. Includes 2-3 main dishes.</span>
+                    <span data-lang="no">Perfekt for mellomstore arrangementer. Inkluderer 2-3 hovedretter.</span>
+                </p>
+            </div>
+
+            <div class="tier-card" style="border-color: var(--primary); transform: scale(1.05);">
+                <div style="background: var(--primary); color: white; padding: 0.5rem; border-radius: 10px; text-align: center; margin-bottom: 1rem; font-weight: 700;">
+                    <span data-lang="en" class="active">MOST POPULAR</span>
+                    <span data-lang="no">MEST POPULÆR</span>
+                </div>
+                <h3>
+                    <span data-lang="en" class="active">121-150 People</span>
+                    <span data-lang="no">121-150 Personer</span>
+                </h3>
+                <div class="price">80-85 kr<span style="font-size: 1rem;">/person</span></div>
+                <div class="price-note">
+                    <span data-lang="en" class="active">10% bulk discount</span>
+                    <span data-lang="no">10% bulkrabatt</span>
+                </div>
+                <div style="background: var(--primary); color: white; padding: 1rem; border-radius: 10px; margin: 1rem 0; text-align: center;">
+                    <div style="font-size: 0.9rem; opacity: 0.9; margin-bottom: 0.5rem;">
+                        <span data-lang="en" class="active">Example Total:</span>
+                        <span data-lang="no">Eksempel Total:</span>
+                    </div>
+                    <div style="font-size: 1.5rem; font-weight: 700;">
+                        150 people = <strong>12,375 kr</strong>
+                    </div>
+                    <div style="font-size: 0.85rem; opacity: 0.8; margin-top: 0.5rem;">
+                        <span data-lang="en" class="active">125 people = 10,312 kr</span>
+                        <span data-lang="no">125 personer = 10,312 kr</span>
+                    </div>
+                </div>
+                <p>
+                    <span data-lang="en" class="active">Best value! Includes 3-4 main dishes.</span>
+                    <span data-lang="no">Best verdi! Inkluderer 3-4 hovedretter.</span>
+                </p>
+            </div>
+
+            <div class="tier-card">
+                <h3>
+                    <span data-lang="en" class="active">151-200+ People</span>
+                    <span data-lang="no">151-200+ Personer</span>
+                </h3>
+                <div class="price">75-80 kr<span style="font-size: 1rem;">/person</span></div>
+                <div class="price-note">
+                    <span data-lang="en" class="active">15% bulk discount</span>
+                    <span data-lang="no">15% bulkrabatt</span>
+                </div>
+                <div style="background: var(--cream); padding: 1rem; border-radius: 10px; margin: 1rem 0; text-align: center;">
+                    <div style="font-size: 0.9rem; color: var(--text-light); margin-bottom: 0.5rem;">
+                        <span data-lang="en" class="active">Example Total:</span>
+                        <span data-lang="no">Eksempel Total:</span>
+                    </div>
+                    <div style="font-size: 1.5rem; font-weight: 700; color: var(--primary);">
+                        200 people = <strong>15,500 kr</strong>
+                    </div>
+                    <div style="font-size: 0.85rem; color: var(--text-light); margin-top: 0.5rem;">
+                        <span data-lang="en" class="active">175 people = 13,562 kr</span>
+                        <span data-lang="no">175 personer = 13,562 kr</span>
+                    </div>
+                </div>
+                <p>
+                    <span data-lang="en" class="active">Maximum savings! Full menu selection, premium service, and custom options available.</span>
+                    <span data-lang="no">Maksimal besparelse! Full menyvalg, premium service og tilpassede alternativer tilgjengelig.</span>
+                </p>
+            </div>
+        </div>
+
+        <div class="tips-section">
+            <h2>
+                <span data-lang="en" class="active">📋 Book Event Menu Planning Tips</span>
+                <span data-lang="no">📋 Tips for Menyplanlegging for Bestill Arrangementer</span>
+            </h2>
+            <div class="tips-grid">
+                <div class="tip-card">
+                    <h3>
+                        <span data-lang="en" class="active">Menu Selection</span>
+                        <span data-lang="no">Menyvalg</span>
+                    </h3>
+                    <ul>
+                        <li>
+                            <span data-lang="en" class="active">Choose 2-4 main dishes for variety</span>
+                            <span data-lang="no">Velg 2-4 hovedretter for variasjon</span>
+                        </li>
+                        <li>
+                            <span data-lang="en" class="active">Include both meat and vegetarian options</span>
+                            <span data-lang="no">Inkluder både kjøtt- og vegetaralternativer</span>
+                        </li>
+                        <li>
+                            <span data-lang="en" class="active">Balance spicy and mild dishes</span>
+                            <span data-lang="no">Balanser krydrede og milde retter</span>
+                        </li>
+                        <li>
+                            <span data-lang="en" class="active">Consider dietary restrictions (ask guests in advance)</span>
+                            <span data-lang="no">Vurder kostrestriksjoner (spør gjester på forhånd)</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="tip-card">
+                    <h3>
+                        <span data-lang="en" class="active">Portion Planning</span>
+                        <span data-lang="no">Porsjonsplanlegging</span>
+                    </h3>
+                    <ul>
+                        <li>
+                            <span data-lang="en" class="active">Plan for 150-200g per person per main dish</span>
+                            <span data-lang="no">Planlegg 150-200g per person per hovedrett</span>
+                        </li>
+                        <li>
+                            <span data-lang="en" class="active">Order 10-15% extra for buffer</span>
+                            <span data-lang="no">Bestill 10-15% ekstra som buffer</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="tip-card">
+                    <h3>
+                        <span data-lang="en" class="active">Timing & Logistics</span>
+                        <span data-lang="no">Timing og Logistikk</span>
+                    </h3>
+                    <ul>
+                        <li>
+                            <span data-lang="en" class="active">Book at least 14 days in advance</span>
+                            <span data-lang="no">Bestill minst 14 dager i forveien</span>
+                        </li>
+                        <li>
+                            <span data-lang="en" class="active">Confirm final guest count 3 days before</span>
+                            <span data-lang="no">Bekreft endelig gjesteantall 3 dager før</span>
+                        </li>
+                        <li>
+                            <span data-lang="en" class="active">Discuss delivery/setup time with us</span>
+                            <span data-lang="no">Diskuter levering/oppsettstid med oss</span>
+                        </li>
+                        <li>
+                            <span data-lang="en" class="active">Ensure adequate serving space and equipment</span>
+                            <span data-lang="no">Sikre tilstrekkelig serveringsplass og utstyr</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="tip-card">
+                    <h3>
+                        <span data-lang="en" class="active">Budget Optimization</span>
+                        <span data-lang="no">Budsjettoptimalisering</span>
+                    </h3>
+                    <ul>
+                        <li>
+                            <span data-lang="en" class="active">Mix premium and standard dishes</span>
+                            <span data-lang="no">Bland premium- og standardretter</span>
+                        </li>
+                        <li>
+                            <span data-lang="en" class="active">Choose dishes that scale well (stews, rice dishes)</span>
+                            <span data-lang="no">Velg retter som skalerer godt (stuinger, risretter)</span>
+                        </li>
+                        <li>
+                            <span data-lang="en" class="active">Consider buffet-style service (more cost-effective)</span>
+                            <span data-lang="no">Vurder buffetstil service (mer kostnadseffektivt)</span>
+                        </li>
+                        <li>
+                            <span data-lang="en" class="active">Ask about package deals for full service</span>
+                            <span data-lang="no">Spør om pakketilbud for full service</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="menu-grid">
+            <div class="menu-item-card">
+                <h3>Benachin (Jollof Rice)</h3>
+                <p class="description">
+                    <span data-lang="en" class="active">One-pot rice with meat/fish, vegetables, and aromatic spices</span>
+                    <span data-lang="no">En-pott ris med kjøtt/fisk, grønnsaker og aromatiske krydder</span>
+                </p>
+                <div class="price-info">
+                    <span class="price-per-person">85 kr<span style="font-size: 0.9rem;">/person</span></span>
+                    <span class="bulk-discount">
+                        <span data-lang="en" class="active">Bulk Price</span>
+                        <span data-lang="no">Bulkpris</span>
+                    </span>
+                </div>
+            </div>
+
+            <div class="menu-item-card">
+                <h3>Domoda (Peanut Stew)</h3>
+                <p class="description">
+                    <span data-lang="en" class="active">Rich and creamy peanut stew with meat/fish, served with rice</span>
+                    <span data-lang="no">Rik og kremet peanøttstuing med kjøtt/fisk, servert med ris</span>
+                </p>
+                <div class="price-info">
+                    <span class="price-per-person">90 kr<span style="font-size: 0.9rem;">/person</span></span>
+                    <span class="bulk-discount">
+                        <span data-lang="en" class="active">Bulk Price</span>
+                        <span data-lang="no">Bulkpris</span>
+                    </span>
+                </div>
+            </div>
+
+            <div class="menu-item-card">
+                <h3>Yassa (Chicken/Fish)</h3>
+                <p class="description">
+                    <span data-lang="en" class="active">Marinated chicken or fish with onions and lemon, served with rice</span>
+                    <span data-lang="no">Marinert kylling eller fisk med løk og sitron, servert med ris</span>
+                </p>
+                <div class="price-info">
+                    <span class="price-per-person">95 kr<span style="font-size: 0.9rem;">/person</span></span>
+                    <span class="bulk-discount">
+                        <span data-lang="en" class="active">Bulk Price</span>
+                        <span data-lang="no">Bulkpris</span>
+                    </span>
+                </div>
+            </div>
+
+            <div class="menu-item-card">
+                <h3>Fried Rice</h3>
+                <p class="description">
+                    <span data-lang="en" class="active">Flavorful fried rice with vegetables and traditional Gambian spices</span>
+                    <span data-lang="no">Smakfull stekt ris med grønnsaker og tradisjonelle gambiske krydder</span>
+                </p>
+                <div class="price-info">
+                    <span class="price-per-person">85 kr<span style="font-size: 0.9rem;">/person</span></span>
+                    <span class="bulk-discount">
+                        <span data-lang="en" class="active">Bulk Price</span>
+                        <span data-lang="no">Bulkpris</span>
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <div style="background: white; border-radius: 20px; padding: 3rem; margin: 3rem 0; box-shadow: 0 10px 40px rgba(0,0,0,0.1);">
+            <h2 style="color: var(--primary); font-size: 2rem; margin-bottom: 2rem; text-align: center;">
+                <span data-lang="en" class="active">💰 Quick Price Calculator</span>
+                <span data-lang="no">💰 Rask Priskalkulator</span>
+            </h2>
+            <div style="max-width: 600px; margin: 0 auto;">
+                <div style="margin-bottom: 2rem;">
+                    <label style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: var(--text);">
+                        <span data-lang="en" class="active">Number of People:</span>
+                        <span data-lang="no">Antall Personer:</span>
+                    </label>
+                    <input type="number" id="peopleCount" min="100" max="300" value="150" 
+                           style="width: 100%; padding: 1rem; border: 2px solid var(--primary); border-radius: 10px; font-size: 1.2rem; text-align: center;"
+                           oninput="calculatePrice()">
+                </div>
+                <div id="priceResult" style="background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; padding: 2rem; border-radius: 15px; text-align: center;">
+                    <div style="font-size: 1.2rem; margin-bottom: 1rem; opacity: 0.9;">
+                        <span data-lang="en" class="active">Estimated Total Price:</span>
+                        <span data-lang="no">Estimert Totalpris:</span>
+                    </div>
+                    <div style="font-size: 3rem; font-weight: 800; margin-bottom: 0.5rem;" id="totalPrice">12,375 kr</div>
+                    <div style="font-size: 1rem; opacity: 0.8;" id="pricePerPerson">82.50 kr per person</div>
+                    <div style="font-size: 0.9rem; opacity: 0.7; margin-top: 1rem;" id="tierInfo">
+                        <span data-lang="en" class="active">Tier 2: 10% bulk discount applied</span>
+                        <span data-lang="no">Nivå 2: 10% bulkrabatt anvendt</span>
+                    </div>
+                </div>
+                <p style="text-align: center; margin-top: 1.5rem; color: var(--text-light); font-size: 0.9rem;">
+                    <span data-lang="en" class="active">* Final price may vary based on menu selection and specific requirements. Contact us for a detailed quote.</span>
+                    <span data-lang="no">* Endelig pris kan variere basert på menyvalg og spesifikke krav. Kontakt oss for et detaljert tilbud.</span>
+                </p>
+            </div>
+        </div>
+
+        <div class="contact-info">
+            <h3>
+                <span data-lang="en" class="active">Ready to Plan Your Event?</span>
+                <span data-lang="no">Klar til å planlegge ditt arrangement?</span>
+            </h3>
+            <p style="margin: 1rem 0;">
+                <span data-lang="en" class="active">Contact us for a custom quote and consultation</span>
+                <span data-lang="no">Kontakt oss for et tilpasset tilbud og konsultasjon</span>
+            </p>
+            <p style="font-size: 1.2rem; margin-top: 1rem;">
+                <span data-lang="en" class="active">Phone:</span>
+                <span data-lang="no">Telefon:</span>
+                <a href="tel:90714245">90714245</a>
+            </p>
+            <p style="font-size: 1.2rem;">
+                <span data-lang="en" class="active">Email:</span>
+                <span data-lang="no">E-post:</span>
+                <a href="mailto:gambiandelights@gmail.com">gambiandelights@gmail.com</a>
+            </p>
+        </div>
+
+        <!-- Booking Form Section -->
+        <div style="background: white; border-radius: 20px; padding: 3rem; margin: 3rem 0; box-shadow: 0 10px 40px rgba(0,0,0,0.1);">
+            <h2 style="color: var(--primary); font-size: 2.5rem; margin-bottom: 1rem; text-align: center;">
+                <span data-lang="en" class="active">Book Your Event</span>
+                <span data-lang="no">Bestill Ditt Arrangement</span>
+            </h2>
+            <p style="text-align: center; color: var(--text-light); margin-bottom: 3rem; font-size: 1.1rem;">
+                <span data-lang="en" class="active">Fill out the form below to place your booking for 100-200+ people</span>
+                <span data-lang="no">Fyll ut skjemaet nedenfor for å bestille for 100-200+ personer</span>
+            </p>
+
+            <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 2rem;">
+                <form id="largeEventForm" style="background: var(--cream); padding: 2rem; border-radius: 15px;">
+                    <!-- Event Details -->
+                    <div style="margin-bottom: 2rem;">
+                        <h3 style="color: var(--primary); font-size: 1.5rem; margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 2px solid var(--primary);">
+                            <span data-lang="en" class="active">Event Details</span>
+                            <span data-lang="no">Arrangementsdetaljer</span>
+                        </h3>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+                            <div>
+                                <label style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: var(--text);">
+                                    <span data-lang="en" class="active">Event Name / Occasion *</span>
+                                    <span data-lang="no">Arrangementsnavn / Anledning *</span>
+                                </label>
+                                <input type="text" id="eventName" name="eventName" required style="width: 100%; padding: 0.8rem; border: 2px solid #e0e0e0; border-radius: 10px; font-size: 1rem;" placeholder="e.g., Wedding, Corporate Event">
+                            </div>
+                            <div>
+                                <label style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: var(--text);">
+                                    <span data-lang="en" class="active">Event Date *</span>
+                                    <span data-lang="no">Arrangementsdato *</span>
+                                </label>
+                                <input type="date" id="eventDate" name="eventDate" required style="width: 100%; padding: 0.8rem; border: 2px solid #e0e0e0; border-radius: 10px; font-size: 1rem;">
+                            </div>
+                        </div>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+                            <div>
+                                <label style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: var(--text);">
+                                    <span data-lang="en" class="active">Event Time *</span>
+                                    <span data-lang="no">Arrangementstid *</span>
+                                </label>
+                                <input type="time" id="eventTime" name="eventTime" required style="width: 100%; padding: 0.8rem; border: 2px solid #e0e0e0; border-radius: 10px; font-size: 1rem;">
+                            </div>
+                            <div>
+                                <label style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: var(--text);">
+                                    <span data-lang="en" class="active">Number of Guests *</span>
+                                    <span data-lang="no">Antall Gjester *</span>
+                                </label>
+                                <input type="number" id="guests" name="guests" required min="100" style="width: 100%; padding: 0.8rem; border: 2px solid #e0e0e0; border-radius: 10px; font-size: 1rem;" oninput="updateLargeEventPricing()">
+                                <small style="color: var(--text-light); font-size: 0.85rem;">
+                                    <span data-lang="en" class="active">Minimum 100 guests for book events</span>
+                                    <span data-lang="no">Minimum 100 gjester for bestill arrangementer</span>
+                                </small>
+                            </div>
+                        </div>
+                        <div>
+                            <label style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: var(--text);">
+                                <span data-lang="en" class="active">Event Location / Delivery Address *</span>
+                                <span data-lang="no">Arrangementssted / Leveringsadresse *</span>
+                            </label>
+                            <textarea id="eventLocation" name="eventLocation" required style="width: 100%; padding: 0.8rem; border: 2px solid #e0e0e0; border-radius: 10px; font-size: 1rem; min-height: 80px;" placeholder="Full address including postcode"></textarea>
+                        </div>
+                    </div>
+
+                    <!-- Contact Information -->
+                    <div style="margin-bottom: 2rem;">
+                        <h3 style="color: var(--primary); font-size: 1.5rem; margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 2px solid var(--primary);">
+                            <span data-lang="en" class="active">Contact Information</span>
+                            <span data-lang="no">Kontaktinformasjon</span>
+                        </h3>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+                            <div>
+                                <label style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: var(--text);">
+                                    <span data-lang="en" class="active">Your Name *</span>
+                                    <span data-lang="no">Ditt Navn *</span>
+                                </label>
+                                <input type="text" id="customerName" name="customerName" required style="width: 100%; padding: 0.8rem; border: 2px solid #e0e0e0; border-radius: 10px; font-size: 1rem;">
+                            </div>
+                            <div>
+                                <label style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: var(--text);">
+                                    <span data-lang="en" class="active">Phone Number *</span>
+                                    <span data-lang="no">Telefonnummer *</span>
+                                </label>
+                                <input type="tel" id="phone" name="phone" required style="width: 100%; padding: 0.8rem; border: 2px solid #e0e0e0; border-radius: 10px; font-size: 1rem;">
+                            </div>
+                        </div>
+                        <div>
+                            <label style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: var(--text);">
+                                <span data-lang="en" class="active">Email Address *</span>
+                                <span data-lang="no">E-postadresse *</span>
+                            </label>
+                            <input type="email" id="email" name="email" required style="width: 100%; padding: 0.8rem; border: 2px solid #e0e0e0; border-radius: 10px; font-size: 1rem;" placeholder="your.email@example.com">
+                        </div>
+                    </div>
+
+                    <!-- Menu Selection -->
+                    <div style="margin-bottom: 2rem;">
+                        <h3 style="color: var(--primary); font-size: 1.5rem; margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 2px solid var(--primary);">
+                            <span data-lang="en" class="active">Select Dishes (Percentage of Guests)</span>
+                            <span data-lang="no">Velg Retter (Prosent av Gjester)</span>
+                        </h3>
+                        <p style="color: var(--text-light); margin-bottom: 1rem; font-size: 0.9rem;">
+                            <span data-lang="en" class="active">Enter percentage for each dish (e.g., 40 = 40% of guests will have this dish). Total should be around 100%.</span>
+                            <span data-lang="no">Skriv inn prosent for hver rett (f.eks. 40 = 40% av gjestene vil ha denne retten). Total bør være rundt 100%.</span>
+                        </p>
+                        <div id="largeDishSelection" style="display: grid; gap: 1rem;">
+                            <!-- Dishes will be populated by JavaScript -->
+                        </div>
+                    </div>
+
+                    <!-- Special Instructions -->
+                    <div style="margin-bottom: 2rem;">
+                        <h3 style="color: var(--primary); font-size: 1.5rem; margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 2px solid var(--primary);">
+                            <span data-lang="en" class="active">Special Instructions</span>
+                            <span data-lang="no">Spesielle Instruksjoner</span>
+                        </h3>
+                        <textarea id="instructions" name="instructions" style="width: 100%; padding: 0.8rem; border: 2px solid #e0e0e0; border-radius: 10px; font-size: 1rem; min-height: 100px;" placeholder="Dietary requirements, allergies, special requests..."></textarea>
+                    </div>
+
+                    <!-- Terms and Conditions -->
+                    <div style="background: rgba(139, 69, 19, 0.05); padding: 1.5rem; border-radius: 15px; border: 2px solid rgba(139, 69, 19, 0.2); margin-bottom: 2rem;">
+                        <label style="display: flex; align-items: start; gap: 0.5rem; cursor: pointer;">
+                            <input type="checkbox" id="acceptTerms" name="acceptTerms" required style="width: 20px; height: 20px; margin-top: 0.2rem; cursor: pointer;">
+                            <span style="font-size: 0.95rem;">
+                                <strong>
+                                    <span data-lang="en" class="active">I have read and agree to the </span>
+                                    <span data-lang="no">Jeg har lest og godtar </span>
+                                </strong>
+                                <a href="policy.html" target="_blank" style="color: var(--primary); text-decoration: underline;">
+                                    <span data-lang="en" class="active">Ordering Policy & Cancellation Terms</span>
+                                    <span data-lang="no">Bestillingspolicy & Kanselleringsvilkår</span>
+                                </a>
+                                <strong>
+                                    <span data-lang="en" class="active">. I understand that a 50% deposit is required and cancellation terms apply.</span>
+                                    <span data-lang="no">. Jeg forstår at 50% depositum kreves og kanselleringsvilkår gjelder.</span>
+                                </strong>
+                            </span>
+                        </label>
+                    </div>
+
+                    <button type="submit" style="width: 100%; padding: 1.2rem; background: var(--primary); color: white; border: none; border-radius: 50px; font-size: 1.2rem; font-weight: 700; cursor: pointer; transition: all 0.3s; box-shadow: 0 5px 20px rgba(139, 69, 19, 0.3);">
+                        <span data-lang="en" class="active">Submit Booking</span>
+                        <span data-lang="no">Send Bestilling</span>
+                    </button>
+                </form>
+
+                <!-- Order Summary -->
+                <div style="background: linear-gradient(135deg, var(--dark) 0%, #5D4037 100%); color: white; border-radius: 20px; padding: 2rem; position: sticky; top: 20px; height: fit-content; box-shadow: 0 10px 40px rgba(0,0,0,0.15);">
+                    <h3 style="color: var(--accent); margin-bottom: 1.5rem; font-size: 1.5rem;">
+                        <span data-lang="en" class="active">Order Summary</span>
+                        <span data-lang="no">Bestillingsoversikt</span>
+                    </h3>
+                    <div id="orderSummary" style="margin-bottom: 1.5rem;">
+                        <p style="opacity: 0.7;">
+                            <span data-lang="en" class="active">Select dishes to see your order total</span>
+                            <span data-lang="no">Velg retter for å se din bestillingstotal</span>
+                        </p>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; padding: 1rem 0; margin-top: 1rem; border-top: 2px solid var(--cream); font-size: 1.3rem; font-weight: 700;">
+                        <span>
+                            <span data-lang="en" class="active">Total:</span>
+                            <span data-lang="no">Total:</span>
+                        </span>
+                        <span id="orderTotal">0 kr</span>
+                    </div>
+                    <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid rgba(255,255,255,0.2);">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                            <span style="font-size: 0.95rem; opacity: 0.9;">
+                                <span data-lang="en" class="active">Deposit (50%):</span>
+                                <span data-lang="no">Depositum (50%):</span>
+                            </span>
+                            <span id="depositAmount" style="font-weight: 600; color: #FFD700;">0 kr</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; margin-top: 0.5rem; padding-top: 0.5rem; border-top: 1px solid rgba(255,255,255,0.1);">
+                            <span style="font-size: 0.85rem; opacity: 0.7;">
+                                <span data-lang="en" class="active">Remaining (due 3 days before event):</span>
+                                <span data-lang="no">Restbeløp (forfaller 3 dager før event):</span>
+                            </span>
+                            <span id="remainingAmount" style="font-size: 0.85rem; opacity: 0.7;">0 kr</span>
+                        </div>
+                    </div>
+                    <div style="margin-top: 2rem; padding-top: 2rem; border-top: 1px solid rgba(255,255,255,0.2);">
+                        <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 0.5rem;">
+                            <strong>
+                                <span data-lang="en" class="active">Payment Methods:</span>
+                                <span data-lang="no">Betalingsmetoder:</span>
+                            </strong>
+                        </p>
+                        <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                            <span style="background: rgba(255,255,255,0.2); padding: 0.3rem 0.6rem; border-radius: 5px; font-size: 0.8rem;">Visa</span>
+                            <span style="background: rgba(255,255,255,0.2); padding: 0.3rem 0.6rem; border-radius: 5px; font-size: 0.8rem;">Mastercard</span>
+                            <span style="background: rgba(255,255,255,0.2); padding: 0.3rem 0.6rem; border-radius: 5px; font-size: 0.8rem;">Vipps</span>
+                            <span style="background: rgba(255,255,255,0.2); padding: 0.3rem 0.6rem; border-radius: 5px; font-size: 0.8rem;">Klarna</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function switchLanguage(lang) {
+            // Update button states
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+
+            // Update content
+            document.querySelectorAll('[data-lang]').forEach(el => {
+                el.classList.remove('active');
+                if (el.getAttribute('data-lang') === lang) {
+                    el.classList.add('active');
+                }
+            });
+            
+            // Recalculate price to update language
+            if (typeof calculatePrice === 'function') {
+                calculatePrice();
+            }
+        }
+
+        function calculatePrice() {
+            const peopleInput = document.getElementById('peopleCount');
+            if (!peopleInput) return;
+            
+            const people = parseInt(peopleInput.value) || 150;
+            let pricePerPerson, tierTextEN, tierTextNO;
+            
+            if (people >= 100 && people <= 120) {
+                pricePerPerson = 87.50; // Average of 85-90
+                tierTextEN = 'Tier 1: 5% bulk discount applied';
+                tierTextNO = 'Nivå 1: 5% bulkrabatt anvendt';
+            } else if (people >= 121 && people <= 150) {
+                pricePerPerson = 82.50; // Average of 80-85
+                tierTextEN = 'Tier 2: 10% bulk discount applied';
+                tierTextNO = 'Nivå 2: 10% bulkrabatt anvendt';
+            } else if (people >= 151) {
+                pricePerPerson = 77.50; // Average of 75-80
+                tierTextEN = 'Tier 3: 15% bulk discount applied';
+                tierTextNO = 'Nivå 3: 15% bulkrabatt anvendt';
+            } else {
+                pricePerPerson = 95; // Regular price for less than 100
+                tierTextEN = 'Regular pricing (bulk discounts start at 100 people)';
+                tierTextNO = 'Vanlig prising (bulkrabatter starter ved 100 personer)';
+            }
+            
+            const total = people * pricePerPerson;
+            
+            const totalPriceEl = document.getElementById('totalPrice');
+            const pricePerPersonEl = document.getElementById('pricePerPerson');
+            const tierInfoEl = document.getElementById('tierInfo');
+            
+            if (totalPriceEl) {
+                totalPriceEl.textContent = total.toLocaleString('no-NO') + ' kr';
+            }
+            if (pricePerPersonEl) {
+                pricePerPersonEl.textContent = pricePerPerson.toFixed(2) + ' kr per person';
+            }
+            if (tierInfoEl) {
+                const lang = document.querySelector('[data-lang].active')?.getAttribute('data-lang') || 'en';
+                tierInfoEl.innerHTML = lang === 'en' ? tierTextEN : tierTextNO;
+            }
+        }
+
+        // Initialize calculator on page load
+        window.onload = function() {
+            calculatePrice();
+            const peopleInput = document.getElementById('peopleCount');
+            if (peopleInput) {
+                peopleInput.addEventListener('input', calculatePrice);
+            }
+        };
+
+        function calculatePrice() {
+            const people = parseInt(document.getElementById('peopleCount').value) || 150;
+            let pricePerPerson, tier, tierTextEN, tierTextNO, discount;
+            
+            if (people >= 100 && people <= 120) {
+                pricePerPerson = 87.50; // Average of 85-90
+                tier = 1;
+                discount = '5%';
+                tierTextEN = 'Tier 1: 5% bulk discount applied';
+                tierTextNO = 'Nivå 1: 5% bulkrabatt anvendt';
+            } else if (people >= 121 && people <= 150) {
+                pricePerPerson = 82.50; // Average of 80-85
+                tier = 2;
+                discount = '10%';
+                tierTextEN = 'Tier 2: 10% bulk discount applied';
+                tierTextNO = 'Nivå 2: 10% bulkrabatt anvendt';
+            } else if (people >= 151) {
+                pricePerPerson = 77.50; // Average of 75-80
+                tier = 3;
+                discount = '15%';
+                tierTextEN = 'Tier 3: 15% bulk discount applied';
+                tierTextNO = 'Nivå 3: 15% bulkrabatt anvendt';
+            } else {
+                pricePerPerson = 95; // Regular price for less than 100
+                tier = 0;
+                discount = '0%';
+                tierTextEN = 'Regular pricing (bulk discounts start at 100 people)';
+                tierTextNO = 'Vanlig prising (bulkrabatter starter ved 100 personer)';
+            }
+            
+            const total = people * pricePerPerson;
+            
+            document.getElementById('totalPrice').textContent = total.toLocaleString('no-NO') + ' kr';
+            document.getElementById('pricePerPerson').textContent = pricePerPerson.toFixed(2) + ' kr per person';
+            
+            const tierInfo = document.getElementById('tierInfo');
+            const lang = document.querySelector('[data-lang].active')?.getAttribute('data-lang') || 'en';
+            if (lang === 'en') {
+                tierInfo.innerHTML = tierTextEN;
+            } else {
+                tierInfo.innerHTML = tierTextNO;
+            }
+        }
+
+        // Initialize calculator on page load
+        window.onload = function() {
+            calculatePrice();
+            renderLargeEventDishes();
+            // Set minimum date to today
+            const eventDateInput = document.getElementById('eventDate');
+            if (eventDateInput) {
+                eventDateInput.min = new Date().toISOString().split('T')[0];
+            }
+        };
+
+        // Large event dishes data
+        const largeEventDishes = [
+            {
+                id: 'benachin',
+                name: 'Benachin (Jollof Rice)',
+                basePrice: 95,
+                link: 'benachin.html',
+                description: 'One-pot rice with meat/fish, vegetables, and aromatic spices',
+                vegan: true,
+                glutenFree: true
+            },
+            {
+                id: 'domoda',
+                name: 'Domoda (Peanut Stew)',
+                basePrice: 100,
+                link: 'domoda.html',
+                description: 'Rich and creamy peanut stew with meat/fish, served with rice',
+                vegan: true,
+                glutenFree: true
+            },
+            {
+                id: 'yassa',
+                name: 'Yassa (Chicken/Fish)',
+                basePrice: 105,
+                link: 'yassa.html',
+                description: 'Marinated chicken or fish with onions and lemon, served with rice',
+                vegan: true,
+                glutenFree: true
+            },
+            {
+                id: 'fried-rice',
+                name: 'Fried Rice',
+                basePrice: 110,
+                link: 'fried-rice.html',
+                description: 'Flavorful fried rice with vegetables and traditional spices',
+                vegan: true,
+                glutenFree: true
+            }
+        ];
+
+        // Large event bulk prices
+        const largeEventPrices = {
+            'benachin': { base: 95, bulk100: 87.50, bulk150: 82.50, bulk200: 77.50 },
+            'domoda': { base: 100, bulk100: 90, bulk150: 85, bulk200: 80 },
+            'yassa': { base: 105, bulk100: 95, bulk150: 90, bulk200: 85 },
+            'fried-rice': { base: 110, bulk100: 85, bulk150: 80, bulk200: 75 }
+        };
+
+        function getLargeEventPrice(dishId, guests) {
+            const prices = largeEventPrices[dishId];
+            if (!prices) return largeEventDishes.find(d => d.id === dishId)?.basePrice || 0;
+            
+            if (guests >= 151) return prices.bulk200;
+            if (guests >= 121) return prices.bulk150;
+            if (guests >= 100) return prices.bulk100;
+            return prices.base;
+        }
+
+        function renderLargeEventDishes() {
+            const container = document.getElementById('largeDishSelection');
+            if (!container) return;
+            
+            const guests = parseInt(document.getElementById('guests')?.value) || 100;
+            
+            container.innerHTML = largeEventDishes.map(dish => {
+                const bulkPrice = getLargeEventPrice(dish.id, guests);
+                return `
+                <div style="background: white; border: 2px solid #e0e0e0; border-radius: 15px; padding: 1.5rem; transition: all 0.3s;" data-dish-id="${dish.id}">
+                    <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 1rem;">
+                        <div style="flex: 1;">
+                            <h4 style="color: var(--dark); font-size: 1.2rem; margin-bottom: 0.5rem;">${dish.name}</h4>
+                            <p style="color: var(--text-light); font-size: 0.9rem; margin-bottom: 0.5rem;">${dish.description}</p>
+                            <a href="${dish.link}" style="color: var(--primary); text-decoration: none; font-size: 0.9rem; font-weight: 500;">View Details →</a>
+                        </div>
+                        <div style="text-align: right;">
+                            <div style="font-size: 1.3rem; font-weight: 700; color: var(--primary);">${bulkPrice} kr</div>
+                            <div style="font-size: 0.85rem; color: var(--text-light);">
+                                <span data-lang="en" class="active">per person</span>
+                                <span data-lang="no">per person</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="display: flex; gap: 0.5rem; margin-bottom: 1rem; flex-wrap: wrap;">
+                        ${dish.vegan ? '<span style="background: #4CAF50; color: white; padding: 0.3rem 0.6rem; border-radius: 15px; font-size: 0.75rem; font-weight: 600;">Vegan Option</span>' : ''}
+                        ${dish.glutenFree ? '<span style="background: linear-gradient(135deg, var(--accent), var(--secondary)); color: white; padding: 0.3rem 0.6rem; border-radius: 15px; font-size: 0.75rem; font-weight: 600;">Gluten-Free</span>' : ''}
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 1rem;">
+                        <label style="font-weight: 600; color: var(--text);">
+                            <span data-lang="en" class="active">Percentage:</span>
+                            <span data-lang="no">Prosent:</span>
+                        </label>
+                        <button type="button" onclick="changeLargeQuantity('${dish.id}', -5)" style="width: 35px; height: 35px; border: 2px solid var(--primary); background: white; color: var(--primary); border-radius: 50%; font-size: 1.2rem; cursor: pointer; font-weight: bold;">−</button>
+                        <input type="number" id="large-qty-${dish.id}" name="large-dish-${dish.id}" min="0" max="100" value="0" onchange="updateLargeEventSummary()" style="width: 80px; text-align: center; font-size: 1.1rem; font-weight: 600; border: 2px solid #e0e0e0; border-radius: 10px; padding: 0.5rem;" placeholder="%">
+                        <button type="button" onclick="changeLargeQuantity('${dish.id}', 5)" style="width: 35px; height: 35px; border: 2px solid var(--primary); background: white; color: var(--primary); border-radius: 50%; font-size: 1.2rem; cursor: pointer; font-weight: bold;">+</button>
+                        <span style="color: var(--text-light); font-size: 0.9rem;">
+                            <span data-lang="en" class="active">% of guests</span>
+                            <span data-lang="no">% av gjester</span>
+                        </span>
+                    </div>
+                </div>
+            `;
+            }).join('');
+        }
+
+        function changeLargeQuantity(dishId, change) {
+            const input = document.getElementById(`large-qty-${dishId}`);
+            if (!input) return;
+            const newValue = Math.max(0, Math.min(100, parseInt(input.value) + change));
+            input.value = newValue;
+            updateLargeEventSummary();
+        }
+
+        function updateLargeEventPricing() {
+            renderLargeEventDishes();
+            updateLargeEventSummary();
+        }
+
+        function updateLargeEventSummary() {
+            const guests = parseInt(document.getElementById('guests')?.value) || 100;
+            let total = 0;
+            const summaryItems = [];
+
+            largeEventDishes.forEach(dish => {
+                const percentage = parseInt(document.getElementById(`large-qty-${dish.id}`)?.value) || 0;
+                if (percentage > 0) {
+                    const qty = Math.ceil((guests * percentage) / 100);
+                    const price = getLargeEventPrice(dish.id, guests);
+                    const itemTotal = price * qty;
+                    total += itemTotal;
+                    summaryItems.push({
+                        name: `${dish.name} (${percentage}% = ${qty} portions)`,
+                        qty: qty,
+                        price: price,
+                        total: itemTotal
+                    });
+                }
+            });
+
+            // Update summary display
+            const summaryContainer = document.getElementById('orderSummary');
+            if (summaryItems.length === 0) {
+                const lang = document.querySelector('[data-lang].active')?.getAttribute('data-lang') || 'en';
+                if (lang === 'en') {
+                    summaryContainer.innerHTML = '<p style="opacity: 0.7;">Select dishes to see your order total</p>';
+                } else {
+                    summaryContainer.innerHTML = '<p style="opacity: 0.7;">Velg retter for å se din bestillingstotal</p>';
+                }
+            } else {
+                summaryContainer.innerHTML = summaryItems.map(item => `
+                    <div style="display: flex; justify-content: space-between; padding: 0.8rem 0; border-bottom: 1px solid rgba(255,255,255,0.1);">
+                        <div>
+                            <div style="font-weight: 600;">${item.name}</div>
+                            <div style="font-size: 0.85rem; opacity: 0.8;">${item.qty} × ${item.price} kr</div>
+                        </div>
+                        <div style="font-weight: 600;">${item.total} kr</div>
+                    </div>
+                `).join('');
+            }
+
+            document.getElementById('orderTotal').textContent = `${total.toLocaleString('no-NO')} kr`;
+            
+            // Calculate deposit (50%) and remaining amount
+            const deposit = Math.round(total * 0.5);
+            const remaining = total - deposit;
+            document.getElementById('depositAmount').textContent = `${deposit.toLocaleString('no-NO')} kr`;
+            document.getElementById('remainingAmount').textContent = `${remaining.toLocaleString('no-NO')} kr`;
+        }
+
+        // Form submission
+        document.getElementById('largeEventForm')?.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            const guests = parseInt(formData.get('guests')) || 100;
+            
+            const orderData = {
+                event: {
+                    name: formData.get('eventName'),
+                    date: formData.get('eventDate'),
+                    time: formData.get('eventTime'),
+                    location: formData.get('eventLocation'),
+                    guests: guests
+                },
+                contact: {
+                    name: formData.get('customerName'),
+                    phone: formData.get('phone'),
+                    email: formData.get('email')
+                },
+                dishes: [],
+                instructions: formData.get('instructions'),
+                total: parseFloat(document.getElementById('orderTotal').textContent.replace(/[^\d]/g, ''))
+            };
+
+            // Collect dishes
+            largeEventDishes.forEach(dish => {
+                const percentage = parseInt(formData.get(`large-dish-${dish.id}`)) || 0;
+                if (percentage > 0) {
+                    const qty = Math.ceil((guests * percentage) / 100);
+                    const price = getLargeEventPrice(dish.id, guests);
+                    orderData.dishes.push({
+                        name: dish.name,
+                        percentage: percentage,
+                        quantity: qty,
+                        price: price
+                    });
+                }
+            });
+
+            // Generate order number
+            const orderNumber = 'GD-' + new Date().getFullYear() + '-' + String(Math.floor(Math.random() * 90000) + 10000);
+            
+            // Format order details for Formspree
+            let orderDetails = `🍽️ NEW BOOK EVENT ORDER - Gambian Delights\n\n`;
+            orderDetails += `Order Number: ${orderNumber}\n`;
+            orderDetails += `Order Type: Large Event (100+ guests)\n\n`;
+            orderDetails += `EVENT DETAILS:\n`;
+            orderDetails += `Event: ${orderData.event.name}\n`;
+            orderDetails += `Date: ${orderData.event.date}\n`;
+            orderDetails += `Time: ${orderData.event.time}\n`;
+            orderDetails += `Guests: ${orderData.event.guests}\n`;
+            orderDetails += `Location: ${orderData.event.location}\n\n`;
+            orderDetails += `CONTACT INFORMATION:\n`;
+            orderDetails += `Name: ${orderData.contact.name}\n`;
+            orderDetails += `Phone: ${orderData.contact.phone}\n`;
+            orderDetails += `Email: ${orderData.contact.email}\n\n`;
+            orderDetails += `ORDER (Percentage-Based):\n`;
+            orderData.dishes.forEach(dish => {
+                orderDetails += `${dish.name}: ${dish.percentage}% (${dish.quantity} portions) × ${dish.price} kr = ${(dish.quantity * dish.price)} kr\n`;
+            });
+            orderDetails += `\nTOTAL: ${orderData.total.toLocaleString('no-NO')} kr\n\n`;
+            if (orderData.instructions) {
+                orderDetails += `SPECIAL INSTRUCTIONS:\n${orderData.instructions}\n\n`;
+            }
+            orderDetails += `---\n`;
+            orderDetails += `IMPORTANT: Order Number ${orderNumber} - Save this for your records and to leave a review!`;
+
+            // Prepare data for Formspree
+            const formspreeData = {
+                _subject: `New Book Event Order - ${orderNumber} - ${orderData.event.name} (${orderData.event.guests} guests)`,
+                _replyto: orderData.contact.email,
+                orderNumber: orderNumber,
+                orderType: 'Large Event (100+ guests)',
+                eventName: orderData.event.name,
+                eventDate: orderData.event.date,
+                eventTime: orderData.event.time,
+                guests: orderData.event.guests,
+                location: orderData.event.location,
+                customerName: orderData.contact.name,
+                customerPhone: orderData.contact.phone,
+                customerEmail: orderData.contact.email,
+                total: `${orderData.total.toLocaleString('no-NO')} kr`,
+                dishes: orderData.dishes.map(d => `${d.name}: ${d.percentage}% (${d.quantity} portions) × ${d.price} kr`).join('\n'),
+                specialInstructions: orderData.instructions || 'None',
+                orderDetails: orderDetails
+            };
+
+            // Submit to Formspree
+            fetch('https://formspree.io/f/mrbnlnpe', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify(formspreeData)
+            })
+            .then(response => {
+                if (response.ok) {
+                    // Show success message
+                    const lang = document.querySelector('[data-lang].active')?.getAttribute('data-lang') || 'en';
+                    if (lang === 'en') {
+                        alert(`✅ Booking submitted successfully!\n\nOrder Number: ${orderNumber}\n\nWe've received your large event booking and will contact you soon to confirm. Please save your order number for your records!`);
+                    } else {
+                        alert(`✅ Bestilling sendt!\n\nOrdrenummer: ${orderNumber}\n\nVi har mottatt din store arrangementsbestilling og vil kontakte deg snart for å bekrefte. Vennligst lagre ordrenummeret ditt!`);
+                    }
+                    // Reset form
+                    document.getElementById('largeEventForm').reset();
+                    updateLargeEventSummary();
+                } else {
+                    throw new Error('Submission failed');
+                }
+            })
+            .catch(error => {
+                // Fallback to email if Formspree fails
+                const emailSubject = encodeURIComponent(`New Book Event Order - ${orderNumber}`);
+                const emailBody = encodeURIComponent(orderDetails);
+                const emailUrl = `mailto:gambiandelights@gmail.com?subject=${emailSubject}&body=${emailBody}`;
+                window.location.href = emailUrl;
+                
+                const lang = document.querySelector('[data-lang].active')?.getAttribute('data-lang') || 'en';
+                if (lang === 'en') {
+                    alert('Booking submitted via email! Your email client will open. If it doesn\'t open, please email us at gambiandelights@gmail.com with your order details.');
+                } else {
+                    alert('Bestilling sendt via e-post! Din e-postklient vil åpne. Hvis den ikke åpnes, vennligst send oss en e-post på gambiandelights@gmail.com med dine bestillingsdetaljer.');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
+

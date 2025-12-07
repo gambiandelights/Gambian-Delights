@@ -1,0 +1,955 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Now - Gambian Delights</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://js.stripe.com/v3/"></script>
+    <style>
+        :root {
+            --primary: #8B4513;
+            --primary-dark: #6B3410;
+            --secondary: #A0522D;
+            --accent: #CD853F;
+            --dark: #3E2723;
+            --light: #FFF8F0;
+            --cream: #F5F1E8;
+            --gray: #F5F1E8;
+            --text: #3E2723;
+            --text-light: #5D4037;
+            --red: #CE1126;
+            --blue: #0C1C8C;
+            --green: #009639;
+            --success: #4CAF50;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: var(--cream);
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem 20px;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #8B4513 0%, #A0522D 50%, #6B3410 100%);
+            color: white;
+            padding: 1.5rem 0;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo-link {
+            text-decoration: none;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo-link {
+            position: relative;
+            display: inline-block;
+        }
+
+        .logo-link img {
+            height: 60px;
+            border-radius: 10px;
+            filter: brightness(1.15) contrast(1.25) saturate(1.4) sepia(0.2) hue-rotate(-8deg);
+            position: relative;
+            z-index: 1;
+            display: block;
+        }
+
+        .logo-link::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            border-radius: 10px;
+            background: linear-gradient(135deg, rgba(255, 107, 53, 0.15), rgba(232, 90, 43, 0.15), rgba(139, 69, 19, 0.1));
+            mix-blend-mode: multiply;
+            pointer-events: none;
+            z-index: 2;
+        }
+
+        .logo-link h1 {
+            font-size: 1.8rem;
+            font-weight: 800;
+        }
+
+        .order-form {
+            background: white;
+            border-radius: 20px;
+            padding: 3rem;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            margin-top: 2rem;
+            border: 1px solid rgba(139, 69, 19, 0.1);
+        }
+
+        .form-section {
+            margin-bottom: 3rem;
+        }
+
+        .form-section h2 {
+            color: var(--primary);
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 3px solid var(--secondary);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-family: 'Poppins', sans-serif;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .dish-selection {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .dish-card {
+            border: 2px solid #e0e0e0;
+            border-radius: 15px;
+            padding: 1.5rem;
+            transition: all 0.3s;
+            background: var(--gray);
+        }
+
+        .dish-card:hover {
+            border-color: var(--primary);
+            box-shadow: 0 5px 20px rgba(255, 107, 53, 0.2);
+        }
+
+        .dish-card.selected {
+            border-color: var(--primary);
+            background: rgba(255, 107, 53, 0.05);
+        }
+
+        .dish-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 1rem;
+        }
+
+        .dish-header h3 {
+            color: var(--dark);
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .dish-link {
+            color: var(--primary);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .dish-link:hover {
+            text-decoration: underline;
+        }
+
+        .quantity-control {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .qty-btn {
+            width: 40px;
+            height: 40px;
+            border: 2px solid var(--primary);
+            background: white;
+            color: var(--primary);
+            border-radius: 50%;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: bold;
+        }
+
+        .qty-btn:hover {
+            background: var(--primary);
+            color: white;
+            transform: scale(1.1);
+        }
+
+        .qty-input {
+            width: 60px;
+            text-align: center;
+            font-size: 1.2rem;
+            font-weight: 600;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            padding: 0.5rem;
+        }
+
+        .dietary-options {
+            margin-top: 1rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+        .checkbox-group label {
+            margin: 0;
+            font-weight: 400;
+            cursor: pointer;
+        }
+
+        .order-summary {
+            background: linear-gradient(135deg, var(--dark) 0%, #5D4037 100%);
+            color: white;
+            border-radius: 20px;
+            padding: 2rem;
+            margin-top: 2rem;
+            position: sticky;
+            top: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+        }
+
+        .order-summary h3 {
+            color: var(--accent);
+            margin-bottom: 1.5rem;
+            font-size: 1.5rem;
+        }
+
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.8rem 0;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .summary-total {
+            display: flex;
+            justify-content: space-between;
+            padding: 1rem 0;
+            margin-top: 1rem;
+            border-top: 2px solid var(--cream);
+            font-size: 1.3rem;
+            font-weight: 700;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 1.2rem;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 1.5rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 5px 20px rgba(139, 69, 19, 0.3);
+        }
+
+        .submit-btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(139, 69, 19, 0.4);
+        }
+
+        .submit-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .two-column {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+
+        @media (max-width: 768px) {
+            .two-column {
+                grid-template-columns: 1fr;
+            }
+
+            .order-form {
+                padding: 1.5rem;
+            }
+
+            .dish-selection {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="language-toggle">
+        <button class="lang-btn active" onclick="switchLanguage('en')">EN</button>
+        <button class="lang-btn" onclick="switchLanguage('no')">NO</button>
+    </div>
+    <div class="header">
+        <div class="header-content">
+            <a href="index.html" class="logo-link">
+                <img src="IMG_2553.png" alt="Logo">
+                <h1>Gambian Delights</h1>
+            </a>
+            <a href="index.html" style="color: white; text-decoration: none;">← Back to Menu</a>
+        </div>
+    </div>
+
+    <div class="container">
+        <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 2rem;">
+        <div class="order-form">
+            <h1 style="color: var(--primary); font-size: 2.5rem; margin-bottom: 0.5rem;">
+                <span data-lang="en" class="active">Order Now</span>
+                <span data-lang="no">Bestill Nå</span>
+            </h1>
+            <p style="color: var(--text-light); margin-bottom: 2rem;">
+                <span data-lang="en" class="active">Fill out the form below to place your order</span>
+                <span data-lang="no">Fyll ut skjemaet nedenfor for å legge inn din bestilling</span>
+            </p>
+
+            <!-- Info Banner for Book Events -->
+            <div style="background: linear-gradient(135deg, rgba(139, 69, 19, 0.1), rgba(160, 82, 45, 0.1)); padding: 1.5rem; border-radius: 15px; margin-bottom: 2rem; border-left: 4px solid var(--primary);">
+                <h3 style="color: var(--primary); font-size: 1.3rem; margin-bottom: 0.5rem;">
+                    <span data-lang="en" class="active">Planning a Book Event (100-200+ people)?</span>
+                    <span data-lang="no">Planlegger du et bestill arrangement (100-200+ personer)?</span>
+                </h3>
+                <p style="color: var(--text-light); margin-bottom: 1rem; font-size: 0.95rem;">
+                    <span data-lang="en" class="active">We offer special bulk pricing with discounts up to 15% for large events!</span>
+                    <span data-lang="no">Vi tilbyr spesielle bulkpriser med rabatter opp til 15% for store arrangementer!</span>
+                </p>
+                <a href="large-event.html" style="display: inline-block; background: var(--primary); color: white; padding: 0.8rem 1.5rem; border-radius: 25px; text-decoration: none; font-weight: 600; transition: all 0.3s; box-shadow: 0 3px 10px rgba(139, 69, 19, 0.3);">
+                    <span data-lang="en" class="active">Go to Book Events →</span>
+                    <span data-lang="no">Gå til Bestill Arrangementer →</span>
+                </a>
+            </div>
+
+                <form id="orderForm">
+                    <!-- Event Details -->
+                    <div class="form-section">
+                        <h2>
+                            <span data-lang="en" class="active">Event Details</span>
+                            <span data-lang="no">Arrangementsdetaljer</span>
+                        </h2>
+                        <div class="two-column">
+                            <div class="form-group">
+                                <label for="eventName">
+                                    <span data-lang="en" class="active">Event Name / Occasion *</span>
+                                    <span data-lang="no">Arrangementsnavn / Anledning *</span>
+                                </label>
+                                <input type="text" id="eventName" name="eventName" required 
+                                       placeholder="e.g., Birthday Party, Corporate Lunch">
+                            </div>
+                            <div class="form-group">
+                                <label for="eventDate">
+                                    <span data-lang="en" class="active">Event Date *</span>
+                                    <span data-lang="no">Arrangementsdato *</span>
+                                </label>
+                                <input type="date" id="eventDate" name="eventDate" required>
+                            </div>
+                        </div>
+                        <div class="two-column">
+                            <div class="form-group">
+                                <label for="eventTime">Event Time *</label>
+                                <input type="time" id="eventTime" name="eventTime" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="guests">Number of Guests *</label>
+                                <input type="number" id="guests" name="guests" required min="1" placeholder="e.g., 20">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="eventLocation">
+                                <span data-lang="en" class="active">Event Location / Delivery Address *</span>
+                                <span data-lang="no">Arrangementssted / Leveringsadresse *</span>
+                            </label>
+                            <textarea id="eventLocation" name="eventLocation" required placeholder="Full address including postcode"></textarea>
+                        </div>
+                    </div>
+
+                    <!-- Contact Information -->
+                    <div class="form-section">
+                        <h2>
+                            <span data-lang="en" class="active">Contact Information</span>
+                            <span data-lang="no">Kontaktinformasjon</span>
+                        </h2>
+                        <div class="two-column">
+                            <div class="form-group">
+                                <label for="customerName">
+                                    <span data-lang="en" class="active">Your Name *</span>
+                                    <span data-lang="no">Ditt Navn *</span>
+                                </label>
+                                <input type="text" id="customerName" name="customerName" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="phone">
+                                    <span data-lang="en" class="active">Phone Number *</span>
+                                    <span data-lang="no">Telefonnummer *</span>
+                                </label>
+                                <input type="tel" id="phone" name="phone" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">
+                                <span data-lang="en" class="active">Email Address *</span>
+                                <span data-lang="no">E-postadresse *</span>
+                            </label>
+                            <input type="email" id="email" name="email" required placeholder="your.email@example.com">
+                        </div>
+                    </div>
+
+                    <!-- Menu Selection -->
+                    <div class="form-section">
+                        <h2>
+                            <span data-lang="en" class="active">Select Your Dishes</span>
+                            <span data-lang="no">Velg Dine Retter</span>
+                        </h2>
+                        <p style="color: var(--text-light); margin-bottom: 1rem;">
+                            <span data-lang="en" class="active">Click on a dish to view details, then select quantities</span>
+                            <span data-lang="no">Klikk på en rett for å se detaljer, deretter velg antall</span>
+                        </p>
+                        <div class="dish-selection" id="dishSelection">
+                            <!-- Dishes will be populated by JavaScript -->
+                        </div>
+                    </div>
+
+                    <!-- Special Instructions -->
+                    <div class="form-section">
+                        <h2>
+                            <span data-lang="en" class="active">Special Instructions</span>
+                            <span data-lang="no">Spesielle Instruksjoner</span>
+                        </h2>
+                        <div class="form-group">
+                            <label for="instructions">
+                                <span data-lang="en" class="active">Dietary Requirements, Allergies, or Special Requests</span>
+                                <span data-lang="no">Kostkrav, Allergier eller Spesielle Ønsker</span>
+                            </label>
+                            <textarea id="instructions" name="instructions" placeholder="e.g., 10 vegan portions, no peanuts, gluten-free options needed..."></textarea>
+                        </div>
+                    </div>
+
+                    <!-- Terms and Conditions -->
+                    <div class="form-section" style="background: rgba(139, 69, 19, 0.05); padding: 1.5rem; border-radius: 15px; border: 2px solid rgba(139, 69, 19, 0.2);">
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <label style="display: flex; align-items: start; gap: 0.5rem; cursor: pointer;">
+                                <input type="checkbox" id="acceptTerms" name="acceptTerms" required style="width: 20px; height: 20px; margin-top: 0.2rem; cursor: pointer;">
+                                <span style="font-size: 0.95rem;">
+                                    <strong>
+                                        <span data-lang="en" class="active">I have read and agree to the </span>
+                                        <span data-lang="no">Jeg har lest og godtar </span>
+                                    </strong>
+                                    <a href="policy.html" target="_blank" style="color: var(--primary); text-decoration: underline;">
+                                        <span data-lang="en" class="active">Ordering Policy & Cancellation Terms</span>
+                                        <span data-lang="no">Bestillingspolicy & Kanselleringsvilkår</span>
+                                    </a>
+                                    <strong>
+                                        <span data-lang="en" class="active">. I understand that a 50% deposit is required and cancellation terms apply.</span>
+                                        <span data-lang="no">. Jeg forstår at 50% depositum kreves og kanselleringsvilkår gjelder.</span>
+                                    </strong>
+                                </span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="submit-btn" id="submitBtn">
+                        <span data-lang="en" class="active">Submit Booking</span>
+                        <span data-lang="no">Send Bestilling</span>
+                    </button>
+                </form>
+            </div>
+
+            <!-- Order Summary -->
+            <div class="order-summary">
+                <h3>
+                    <span data-lang="en" class="active">Order Summary</span>
+                    <span data-lang="no">Bestillingsoversikt</span>
+                </h3>
+                <div id="orderSummary">
+                    <p style="opacity: 0.7;">
+                        <span data-lang="en" class="active">Select dishes to see your order total</span>
+                        <span data-lang="no">Velg retter for å se din bestillingstotal</span>
+                    </p>
+                </div>
+                <div class="summary-total">
+                    <span>
+                        <span data-lang="en" class="active">Total:</span>
+                        <span data-lang="no">Total:</span>
+                    </span>
+                    <span id="orderTotal">0 kr</span>
+                </div>
+                <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid rgba(255,255,255,0.2);">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                        <span style="font-size: 0.95rem; opacity: 0.9;">
+                            <span data-lang="en" class="active">Deposit (50%):</span>
+                            <span data-lang="no">Depositum (50%):</span>
+                        </span>
+                        <span id="depositAmount" style="font-weight: 600; color: #FFD700;">0 kr</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; margin-top: 0.5rem; padding-top: 0.5rem; border-top: 1px solid rgba(255,255,255,0.1);">
+                        <span style="font-size: 0.85rem; opacity: 0.7;">
+                            <span data-lang="en" class="active">Remaining (due 3 days before event):</span>
+                            <span data-lang="no">Restbeløp (forfaller 3 dager før event):</span>
+                        </span>
+                        <span id="remainingAmount" style="font-size: 0.85rem; opacity: 0.7;">0 kr</span>
+                    </div>
+                </div>
+                <div style="margin-top: 2rem; padding-top: 2rem; border-top: 1px solid rgba(255,255,255,0.2);">
+                    <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 0.5rem;">
+                        <strong>
+                            <span data-lang="en" class="active">Payment Methods:</span>
+                            <span data-lang="no">Betalingsmetoder:</span>
+                        </strong>
+                    </p>
+                    <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                        <span style="background: rgba(255,255,255,0.2); padding: 0.3rem 0.6rem; border-radius: 5px; font-size: 0.8rem;">Visa</span>
+                        <span style="background: rgba(255,255,255,0.2); padding: 0.3rem 0.6rem; border-radius: 5px; font-size: 0.8rem;">Mastercard</span>
+                        <span style="background: rgba(255,255,255,0.2); padding: 0.3rem 0.6rem; border-radius: 5px; font-size: 0.8rem;">Vipps</span>
+                        <span style="background: rgba(255,255,255,0.2); padding: 0.3rem 0.6rem; border-radius: 5px; font-size: 0.8rem;">Klarna</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const dishes = [
+            {
+                id: 'benachin',
+                name: 'Benachin (Jollof Rice)',
+                price: 95,
+                link: 'benachin.html',
+                description: 'One-pot rice with meat/fish, vegetables, and aromatic spices',
+                vegan: true,
+                glutenFree: true
+            },
+            {
+                id: 'domoda',
+                name: 'Domoda (Peanut Stew)',
+                price: 100,
+                link: 'domoda.html',
+                description: 'Rich and creamy peanut stew with meat/fish, served with rice',
+                vegan: true,
+                glutenFree: true
+            },
+            {
+                id: 'yassa',
+                name: 'Yassa (Chicken/Fish)',
+                price: 105,
+                link: 'yassa.html',
+                description: 'Marinated chicken or fish with onions and lemon, served with rice',
+                vegan: true,
+                glutenFree: true
+            },
+            {
+                id: 'fried-rice',
+                name: 'Fried Rice',
+                price: 110,
+                link: 'fried-rice.html',
+                description: 'Flavorful fried rice with vegetables and traditional spices',
+                vegan: true,
+                glutenFree: true
+            }
+        ];
+
+
+        function renderDishes() {
+            const container = document.getElementById('dishSelection');
+            container.innerHTML = dishes.map(dish => `
+                <div class="dish-card" data-dish-id="${dish.id}">
+                    <div class="dish-header">
+                        <div>
+                            <h3>${dish.name}</h3>
+                            <p style="color: var(--text-light); font-size: 0.9rem; margin-bottom: 0.5rem;">${dish.description}</p>
+                            <a href="${dish.link}" class="dish-link">View Details →</a>
+                        </div>
+                        <div style="font-size: 1.5rem; font-weight: 700; color: var(--primary);">${dish.price} kr</div>
+                    </div>
+                    <div class="dietary-options">
+                        ${dish.vegan ? '<span style="background: #4CAF50; color: white; padding: 0.3rem 0.6rem; border-radius: 15px; font-size: 0.75rem; font-weight: 600;">Vegan Option</span>' : ''}
+                        ${dish.glutenFree ? '<span style="background: linear-gradient(135deg, var(--accent), var(--secondary)); color: white; padding: 0.3rem 0.6rem; border-radius: 15px; font-size: 0.75rem; font-weight: 600;">Gluten-Free</span>' : ''}
+                    </div>
+                    <div class="quantity-control">
+                        <button type="button" class="qty-btn" onclick="changeQuantity('${dish.id}', -1)">−</button>
+                        <input type="number" class="qty-input" id="qty-${dish.id}" name="dish-${dish.id}" min="0" value="0" onchange="updateSummary()">
+                        <button type="button" class="qty-btn" onclick="changeQuantity('${dish.id}', 1)">+</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+
+        function changeQuantity(dishId, change) {
+            const input = document.getElementById(`qty-${dishId}`);
+            const newValue = Math.max(0, parseInt(input.value) + change);
+            input.value = newValue;
+            const card = input.closest('.dish-card');
+            if (newValue > 0) {
+                card.classList.add('selected');
+            } else {
+                card.classList.remove('selected');
+            }
+            updateSummary();
+        }
+
+        function updateSummary() {
+            let total = 0;
+            const summaryItems = [];
+
+            // Calculate dish totals
+            dishes.forEach(dish => {
+                const qty = parseInt(document.getElementById(`qty-${dish.id}`).value) || 0;
+                if (qty > 0) {
+                    const itemTotal = dish.price * qty;
+                    total += itemTotal;
+                    summaryItems.push({
+                        name: dish.name,
+                        qty: qty,
+                        price: dish.price,
+                        total: itemTotal
+                    });
+                }
+            });
+
+            // Update summary display
+            const summaryContainer = document.getElementById('orderSummary');
+            if (summaryItems.length === 0) {
+                const lang = document.querySelector('[data-lang].active')?.getAttribute('data-lang') || 'en';
+                if (lang === 'en') {
+                    summaryContainer.innerHTML = '<p style="opacity: 0.7;">Select dishes to see your order total</p>';
+                } else {
+                    summaryContainer.innerHTML = '<p style="opacity: 0.7;">Velg retter for å se din bestillingstotal</p>';
+                }
+            } else {
+                summaryContainer.innerHTML = summaryItems.map(item => `
+                    <div class="summary-item">
+                        <div>
+                            <div style="font-weight: 600;">${item.name}</div>
+                            <div style="font-size: 0.85rem; opacity: 0.8;">${item.qty} × ${item.price} kr</div>
+                        </div>
+                        <div style="font-weight: 600;">${item.total} kr</div>
+                    </div>
+                `).join('');
+            }
+
+            document.getElementById('orderTotal').textContent = `${total} kr`;
+            
+            // Calculate deposit (50%) and remaining amount
+            const deposit = Math.round(total * 0.5);
+            const remaining = total - deposit;
+            document.getElementById('depositAmount').textContent = `${deposit} kr`;
+            document.getElementById('remainingAmount').textContent = `${remaining} kr`;
+        }
+
+        // Set minimum date to today
+        document.getElementById('eventDate').min = new Date().toISOString().split('T')[0];
+
+        // Form submission
+        document.getElementById('orderForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            const orderData = {
+                event: {
+                    name: formData.get('eventName'),
+                    date: formData.get('eventDate'),
+                    time: formData.get('eventTime'),
+                    location: formData.get('eventLocation'),
+                    guests: formData.get('guests')
+                },
+                contact: {
+                    name: formData.get('customerName'),
+                    phone: formData.get('phone'),
+                    email: formData.get('email')
+                },
+                dishes: [],
+                instructions: formData.get('instructions'),
+                total: parseFloat(document.getElementById('orderTotal').textContent.replace(' kr', ''))
+            };
+
+            // Collect dishes
+            dishes.forEach(dish => {
+                const qty = parseInt(formData.get(`dish-${dish.id}`)) || 0;
+                if (qty > 0) {
+                    orderData.dishes.push({
+                        name: dish.name,
+                        quantity: qty,
+                        price: dish.price
+                    });
+                }
+            });
+
+            // Validate order has items
+            if (orderData.total === 0 || orderData.dishes.length === 0) {
+                const lang = document.querySelector('[data-lang].active')?.getAttribute('data-lang') || 'en';
+                if (lang === 'en') {
+                    alert('Please select at least one dish before submitting your order.');
+                } else {
+                    alert('Vennligst velg minst én rett før du sender inn bestillingen.');
+                }
+                return;
+            }
+
+            // Generate order number
+            const orderNumber = 'GD-' + new Date().getFullYear() + '-' + String(Math.floor(Math.random() * 90000) + 10000);
+            
+            // Calculate deposit (50%)
+            const deposit = Math.round(orderData.total * 0.5);
+            
+            // Disable submit button
+            const submitBtn = document.getElementById('submitBtn');
+            submitBtn.disabled = true;
+            const lang = document.querySelector('[data-lang].active')?.getAttribute('data-lang') || 'en';
+            submitBtn.innerHTML = lang === 'en' ? 'Processing...' : 'Behandler...';
+
+            // Store order data temporarily for after payment
+            sessionStorage.setItem('pendingOrder', JSON.stringify({
+                orderNumber: orderNumber,
+                orderData: orderData,
+                deposit: deposit
+            }));
+
+            // Create payment request
+            // Use Netlify Functions endpoint (or your backend URL)
+            const apiUrl = '/.netlify/functions/create-checkout-session';
+            
+            fetch(apiUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    orderNumber: orderNumber,
+                    amount: deposit * 100, // Stripe uses smallest currency unit (øre for NOK)
+                    currency: 'nok',
+                    customerEmail: orderData.contact.email,
+                    customerName: orderData.contact.name,
+                    orderDetails: {
+                        eventName: orderData.event.name,
+                        eventDate: orderData.event.date,
+                        total: orderData.total,
+                        deposit: deposit
+                    }
+                })
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Failed to create checkout session');
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.sessionId) {
+                    // Initialize Stripe
+                    const stripePublishableKey = 'pk_test_51Sbi5yJzNl5yX8PmbfBccF0k3L6dCU9bNL3eUX5x9ZRCrWXW95oWVfYVMuNJRd7TYYt9VUbovwOCrVIL0qifxQKs00MPXmNAEq';
+                    const stripe = Stripe(stripePublishableKey);
+                    return stripe.redirectToCheckout({ sessionId: data.sessionId });
+                } else {
+                    throw new Error('No session ID returned');
+                }
+            })
+            .catch(error => {
+                console.error('Payment error:', error);
+                // Fallback: Show manual payment instructions
+                submitBtn.disabled = false;
+                const currentLang = document.querySelector('[data-lang].active')?.getAttribute('data-lang') || 'en';
+                submitBtn.innerHTML = currentLang === 'en' ? 'Submit Booking' : 'Send Bestilling';
+                
+                if (currentLang === 'en') {
+                    alert(`Payment system is being set up. For now, please complete your order and we'll send you payment instructions via email.\n\nOrder Number: ${orderNumber}\nDeposit Required: ${deposit} kr`);
+                } else {
+                    alert(`Betalingssystemet blir satt opp. For nå, vennligst fullfør bestillingen din så sender vi deg betalingsinstruksjoner via e-post.\n\nOrdrenummer: ${orderNumber}\nDepositum påkrevd: ${deposit} kr`);
+                }
+                
+                // Submit order to Formspree with payment pending note
+                submitOrderToFormspree(orderNumber, orderData, deposit, 'pending');
+            });
+        });
+
+        // Function to submit order to Formspree
+        function submitOrderToFormspree(orderNumber, orderData, deposit, paymentStatus) {
+            // Format order details for Formspree
+            let orderDetails = `🍽️ NEW ORDER - Gambian Delights\n\n`;
+            orderDetails += `Order Number: ${orderNumber}\n`;
+            orderDetails += `Payment Status: ${paymentStatus === 'paid' ? '✅ DEPOSIT PAID' : '⏳ PAYMENT PENDING'}\n\n`;
+            orderDetails += `EVENT DETAILS:\n`;
+            orderDetails += `Event: ${orderData.event.name}\n`;
+            orderDetails += `Date: ${orderData.event.date}\n`;
+            orderDetails += `Time: ${orderData.event.time}\n`;
+            orderDetails += `Guests: ${orderData.event.guests}\n`;
+            orderDetails += `Location: ${orderData.event.location}\n\n`;
+            orderDetails += `CONTACT INFORMATION:\n`;
+            orderDetails += `Name: ${orderData.contact.name}\n`;
+            orderDetails += `Phone: ${orderData.contact.phone}\n`;
+            orderDetails += `Email: ${orderData.contact.email}\n\n`;
+            orderDetails += `ORDER:\n`;
+            orderData.dishes.forEach(dish => {
+                orderDetails += `${dish.name}: ${dish.quantity} × ${dish.price} kr = ${(dish.quantity * dish.price)} kr\n`;
+            });
+            orderDetails += `\nTOTAL: ${orderData.total} kr\n`;
+            orderDetails += `DEPOSIT (50%): ${deposit} kr\n`;
+            orderDetails += `REMAINING (50%): ${orderData.total - deposit} kr (due 3 days before event)\n\n`;
+            if (orderData.instructions) {
+                orderDetails += `SPECIAL INSTRUCTIONS:\n${orderData.instructions}\n\n`;
+            }
+            orderDetails += `---\n`;
+            orderDetails += `IMPORTANT: Order Number ${orderNumber} - Save this for your records and to leave a review!`;
+
+            // Prepare data for Formspree
+            const formspreeData = {
+                _subject: `New Order - ${orderNumber} - ${orderData.event.name} ${paymentStatus === 'paid' ? '[DEPOSIT PAID]' : '[PAYMENT PENDING]'}`,
+                _replyto: orderData.contact.email,
+                orderNumber: orderNumber,
+                paymentStatus: paymentStatus,
+                deposit: `${deposit} kr`,
+                remaining: `${orderData.total - deposit} kr`,
+                eventName: orderData.event.name,
+                eventDate: orderData.event.date,
+                eventTime: orderData.event.time,
+                guests: orderData.event.guests,
+                location: orderData.event.location,
+                customerName: orderData.contact.name,
+                customerPhone: orderData.contact.phone,
+                customerEmail: orderData.contact.email,
+                total: `${orderData.total} kr`,
+                dishes: orderData.dishes.map(d => `${d.name}: ${d.quantity} × ${d.price} kr`).join('\n'),
+                specialInstructions: orderData.instructions || 'None',
+                orderDetails: orderDetails
+            };
+
+            // Submit to Formspree
+            return fetch('https://formspree.io/f/mrbnlnpe', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify(formspreeData)
+            });
+        }
+
+        // Check for payment success callback
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('payment') === 'success') {
+            const pendingOrder = JSON.parse(sessionStorage.getItem('pendingOrder') || '{}');
+            if (pendingOrder.orderNumber) {
+                submitOrderToFormspree(
+                    pendingOrder.orderNumber,
+                    pendingOrder.orderData,
+                    pendingOrder.deposit,
+                    'paid'
+                ).then(() => {
+                    sessionStorage.removeItem('pendingOrder');
+                    const lang = document.querySelector('[data-lang].active')?.getAttribute('data-lang') || 'en';
+                    if (lang === 'en') {
+                        alert(`✅ Payment successful!\n\nOrder Number: ${pendingOrder.orderNumber}\nDeposit Paid: ${pendingOrder.deposit} kr\n\nWe've received your order and payment. We'll contact you soon to confirm. Please save your order number!`);
+                    } else {
+                        alert(`✅ Betaling vellykket!\n\nOrdrenummer: ${pendingOrder.orderNumber}\nDepositum betalt: ${pendingOrder.deposit} kr\n\nVi har mottatt din bestilling og betaling. Vi vil kontakte deg snart for å bekrefte. Vennligst lagre ordrenummeret!`);
+                    }
+                    // Reset form
+                    document.getElementById('orderForm').reset();
+                    updateSummary();
+                    // Clean URL
+                    window.history.replaceState({}, document.title, window.location.pathname);
+                });
+            }
+        }
+
+        // Language switching function
+        function switchLanguage(lang) {
+            // Update button states
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+
+            // Update content
+            document.querySelectorAll('[data-lang]').forEach(el => {
+                el.classList.remove('active');
+                if (el.getAttribute('data-lang') === lang) {
+                    el.classList.add('active');
+                }
+            });
+            
+            // Update summary display language
+            updateSummary();
+        }
+
+        // Initialize on page load
+        window.onload = function() {
+            renderDishes();
+        };
+    </script>
+</body>
+</html>
+

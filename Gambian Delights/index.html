@@ -1,0 +1,1591 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gambian Delights - Real Home Taste</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        .language-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            display: flex;
+            gap: 0.5rem;
+            background: rgba(255,255,255,0.95);
+            padding: 0.5rem;
+            border-radius: 50px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .lang-btn {
+            padding: 0.5rem 1rem;
+            border: 2px solid var(--primary);
+            background: white;
+            color: var(--primary);
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            font-size: 0.9rem;
+        }
+
+        .lang-btn.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        .lang-btn:hover {
+            transform: scale(1.05);
+        }
+
+        [data-lang="no"] {
+            display: none;
+        }
+
+        body.lang-no [data-lang="en"] {
+            display: none;
+        }
+
+        body.lang-no [data-lang="no"] {
+            display: block;
+        }
+
+        body.lang-no [data-lang="no"].inline {
+            display: inline;
+        }
+        :root {
+            --primary: #8B4513;
+            --primary-dark: #6B3410;
+            --secondary: #A0522D;
+            --accent: #CD853F;
+            --dark: #3E2723;
+            --light: #FFF8F0;
+            --cream: #F5F1E8;
+            --gray: #F5F1E8;
+            --text: #3E2723;
+            --text-light: #5D4037;
+            --red: #CE1126;
+            --blue: #0C1C8C;
+            --green: #009639;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            line-height: 1.6;
+            color: var(--text);
+            background: var(--cream);
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header */
+        header {
+            background: linear-gradient(135deg, #8B4513 0%, #A0522D 50%, #6B3410 100%);
+            color: white;
+            padding: 1.5rem 0;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="75" cy="75" r="1" fill="rgba(255,255,255,0.1)"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+            opacity: 0.3;
+        }
+
+        .header-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 2rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            animation: fadeInLeft 0.8s ease-out;
+        }
+
+        .logo-section {
+            position: relative;
+            display: inline-block;
+        }
+
+        .logo-section img {
+            height: 90px;
+            width: auto;
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+            transition: transform 0.3s ease;
+            position: relative;
+            z-index: 1;
+            display: block;
+            background: var(--cream);
+            padding: 5px;
+        }
+
+        .logo-section img:hover {
+            transform: scale(1.05) rotate(2deg);
+        }
+
+        .brand-text h1 {
+            font-size: 2.8rem;
+            font-weight: 800;
+            margin-bottom: 0.3rem;
+            text-shadow: 2px 2px 8px rgba(0,0,0,0.2);
+            letter-spacing: -0.5px;
+        }
+
+        .brand-text p {
+            font-size: 1.1rem;
+            font-weight: 300;
+            opacity: 0.95;
+            letter-spacing: 1px;
+        }
+
+        .contact-header {
+            display: flex;
+            gap: 1.5rem;
+            animation: fadeInRight 0.8s ease-out;
+        }
+
+        .contact-btn {
+            background: rgba(255,255,255,0.2);
+            backdrop-filter: blur(10px);
+            color: white;
+            text-decoration: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 50px;
+            font-size: 0.95rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            border: 2px solid rgba(255,255,255,0.3);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .contact-btn:hover {
+            background: rgba(255,255,255,0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        /* Navigation */
+        nav {
+            background: rgba(26, 26, 26, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            font-size: 1rem;
+            font-weight: 500;
+            padding: 0.7rem 1.5rem;
+            border-radius: 50px;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        nav a::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 2px;
+            background: var(--primary);
+            transition: width 0.3s ease;
+        }
+
+        nav a:hover::before {
+            width: 60%;
+        }
+
+        nav a:hover {
+            background: rgba(255,255,255,0.1);
+            color: var(--accent);
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, #8B4513 0%, #A0522D 100%);
+            color: white;
+            padding: 6rem 0;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -10%;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+
+        .hero::after {
+            content: '';
+            position: absolute;
+            bottom: -30%;
+            left: -10%;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+
+        .hero .container {
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero h2 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+            animation: fadeInUp 1s ease-out;
+            line-height: 1.2;
+        }
+
+        .hero p {
+            font-size: 1.3rem;
+            max-width: 700px;
+            margin: 0 auto 2.5rem;
+            font-weight: 300;
+            animation: fadeInUp 1s ease-out 0.2s both;
+            opacity: 0.95;
+        }
+
+        .cta-button {
+            display: inline-block;
+            padding: 1.2rem 3rem;
+            background: var(--cream);
+            color: var(--primary);
+            text-decoration: none;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            animation: fadeInUp 1s ease-out 0.4s both;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+            background: white;
+        }
+
+        /* Sections */
+        section {
+            padding: 5rem 0;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            color: var(--dark);
+            position: relative;
+            display: inline-block;
+            width: 100%;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            border-radius: 2px;
+        }
+
+        .section-subtitle {
+            text-align: center;
+            font-size: 1.1rem;
+            color: var(--text-light);
+            margin-bottom: 3rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* About Section */
+        .about {
+            background: var(--light);
+        }
+
+        .about-content {
+            max-width: 900px;
+            margin: 0 auto;
+            text-align: center;
+            font-size: 1.15rem;
+            line-height: 1.9;
+            color: var(--text-light);
+        }
+
+        .about-content p {
+            margin-bottom: 1.5rem;
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .feature-card {
+            background: linear-gradient(135deg, #fff 0%, #f8f9fa 100%);
+            padding: 2rem;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+            transition: all 0.3s ease;
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+        }
+
+        .feature-card .icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .feature-card h3 {
+            color: var(--primary);
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Menu Section */
+        .menu {
+            background: linear-gradient(180deg, #f8f9fa 0%, #ffffff 100%);
+        }
+
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .menu-item {
+            background: white;
+            border-radius: 20px;
+            padding: 0;
+            box-shadow: 0 5px 25px rgba(0,0,0,0.08);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border: 1px solid rgba(0,0,0,0.05);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .menu-item-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 20px 20px 0 0;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .menu-item-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .menu-item-content {
+            padding: 2rem;
+        }
+
+        .menu-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .menu-item:hover::before {
+            transform: scaleX(1);
+        }
+
+        .menu-item:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+        }
+
+        .menu-item-content h3 {
+            color: var(--dark);
+            font-size: 1.6rem;
+            font-weight: 700;
+            margin-bottom: 0.8rem;
+        }
+
+        .menu-item-content .description {
+            color: var(--text-light);
+            margin-bottom: 1.5rem;
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        .menu-item-content .price {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--primary);
+        }
+
+        .dietary-badges {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.4rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .badge-vegan {
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+            color: white;
+        }
+
+        .badge-gf {
+            background: linear-gradient(135deg, var(--accent), var(--secondary));
+            color: white;
+        }
+
+        .badge-option {
+            background: linear-gradient(135deg, #2196F3, #1976D2);
+            color: white;
+        }
+
+
+        /* Contact Section */
+        .contact {
+            background: linear-gradient(135deg, var(--dark) 0%, #5D4037 100%);
+            color: white;
+        }
+
+        .contact .section-title {
+            color: white;
+        }
+
+        .contact .section-subtitle {
+            color: rgba(255,255,255,0.8);
+        }
+
+        .contact-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .contact-card {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            padding: 2.5rem;
+            border-radius: 20px;
+            text-align: center;
+            border: 1px solid rgba(255,255,255,0.2);
+            transition: all 0.3s ease;
+        }
+
+        .contact-card:hover {
+            background: rgba(255,255,255,0.15);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        .contact-card .icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .contact-card h3 {
+            color: var(--cream);
+            margin-bottom: 1rem;
+            font-size: 1.4rem;
+            font-weight: 600;
+        }
+
+        .contact-card p {
+            color: rgba(255,255,255,0.9);
+            margin-bottom: 1rem;
+        }
+
+        .contact-card a {
+            color: white;
+            text-decoration: none;
+            font-size: 1.2rem;
+            font-weight: 600;
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            border-radius: 10px;
+            background: rgba(255,255,255,0.1);
+            transition: all 0.3s ease;
+        }
+
+        .contact-card a:hover {
+            background: var(--secondary);
+            transform: scale(1.05);
+        }
+
+        .hours-card {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            padding: 2.5rem;
+            border-radius: 20px;
+            margin-top: 3rem;
+            text-align: center;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .hours-card h3 {
+            color: var(--cream);
+            margin-bottom: 1.5rem;
+            font-size: 1.5rem;
+        }
+
+        .hours-card p {
+            font-size: 1.1rem;
+            margin: 0.8rem 0;
+            color: rgba(255,255,255,0.9);
+        }
+
+        .payment-methods {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            padding: 2.5rem;
+            border-radius: 20px;
+            margin-top: 3rem;
+            text-align: center;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .payment-methods h3 {
+            color: var(--accent);
+            margin-bottom: 1.5rem;
+            font-size: 1.5rem;
+        }
+
+        .payment-icons {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .payment-icon {
+            background: rgba(255,255,255,0.15);
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: white;
+            border: 2px solid rgba(255,255,255,0.2);
+            transition: all 0.3s ease;
+            min-width: 120px;
+            text-align: center;
+        }
+
+        .payment-icon:hover {
+            background: rgba(255,255,255,0.25);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .payment-icon.klarna {
+            background: linear-gradient(135deg, #FFB3C7, #FF8FA3);
+        }
+
+        .payment-icon.visa {
+            background: linear-gradient(135deg, #1434CB, #0F2BA0);
+        }
+
+        .payment-icon.mastercard {
+            background: linear-gradient(135deg, #EB001B, #F79E1B);
+        }
+
+        .payment-icon.vipps {
+            background: linear-gradient(135deg, #FF5B82, #E63950);
+        }
+
+        /* Footer */
+        footer {
+            background: var(--dark);
+            color: white;
+            text-align: center;
+            padding: 3rem 0;
+        }
+
+        .social-links {
+            margin: 2rem 0;
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+        }
+
+        .social-links a {
+            color: white;
+            text-decoration: none;
+            font-size: 1.3rem;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+
+        .social-links a:hover {
+            background: var(--secondary);
+            transform: translateY(-5px) scale(1.1);
+        }
+
+        .language-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            display: flex;
+            gap: 0.5rem;
+            background: rgba(255,255,255,0.95);
+            padding: 0.5rem;
+            border-radius: 50px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            backdrop-filter: blur(10px);
+        }
+
+        .lang-btn {
+            padding: 0.5rem 1rem;
+            border: 2px solid var(--primary);
+            background: white;
+            color: var(--primary);
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            font-size: 0.9rem;
+        }
+
+        .lang-btn.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        .lang-btn:hover {
+            transform: scale(1.05);
+        }
+
+        [data-lang="no"] {
+            display: none;
+        }
+
+        body.lang-no [data-lang="en"] {
+            display: none;
+        }
+
+        body.lang-no [data-lang="no"] {
+            display: block;
+        }
+
+        body.lang-no [data-lang="no"].inline {
+            display: inline;
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes fadeInRight {
+            from {
+                opacity: 0;
+                transform: translateX(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .brand-text h1 {
+                font-size: 2rem;
+            }
+
+            .hero h2 {
+                font-size: 2.2rem;
+            }
+
+            .section-title {
+                font-size: 2.2rem;
+            }
+
+            .contact-header {
+                flex-direction: column;
+                width: 100%;
+            }
+
+            .contact-btn {
+                width: 100%;
+                justify-content: center;
+            }
+
+            nav ul {
+                gap: 0.3rem;
+            }
+
+            nav a {
+                padding: 0.5rem 1rem;
+                font-size: 0.9rem;
+            }
+
+            .menu-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="language-toggle">
+        <button class="lang-btn active" onclick="switchLanguage('en')" id="lang-en">EN</button>
+        <button class="lang-btn" onclick="switchLanguage('no')" id="lang-no">NO</button>
+    </div>
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo-section">
+                    <img src="IMG_2553.png" alt="Gambian Delights Logo">
+                    <div class="brand-text">
+                        <h1>Gambian Delights</h1>
+                        <p>
+                            <span data-lang="en">Real Home Taste</span>
+                            <span data-lang="no">Ekte Hjemmesmak</span>
+                        </p>
+                    </div>
+                </div>
+                <div class="contact-header">
+                    <a href="tel:90714245" class="contact-btn">📞 90714245</a>
+                    <a href="mailto:gambiandelights@gmail.com" class="contact-btn">✉️ gambiandelights@gmail.com</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <nav>
+        <div class="container">
+            <ul>
+                <li><a href="#home"><span data-lang="en">Home</span><span data-lang="no">Hjem</span></a></li>
+                <li><a href="#about"><span data-lang="en">About</span><span data-lang="no">Om Oss</span></a></li>
+                <li><a href="#menu"><span data-lang="en">Menu</span><span data-lang="no">Meny</span></a></li>
+                <li><a href="#loyalty"><span data-lang="en">Loyalty</span><span data-lang="no">Lojalitet</span></a></li>
+                <li><a href="order.html"><span data-lang="en">Order Now</span><span data-lang="no">Bestill Nå</span></a></li>
+                <li><a href="large-event.html"><span data-lang="en">Book Events</span><span data-lang="no">Bestill Arrangementer</span></a></li>
+                <li><a href="policy.html"><span data-lang="en">Policy</span><span data-lang="no">Policy</span></a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <section id="home" class="hero">
+        <div class="container">
+            <h2 data-lang="en">Authentic Gambian<br>Home-Cooked Meals</h2>
+            <h2 data-lang="no">Autentiske Gambiske<br>Hjemmelagde Måltider</h2>
+            <p data-lang="en">Experience the rich flavors of The Gambia with our traditional recipes, made with love and authentic ingredients.</p>
+            <p data-lang="no">Opplev de rike smakene fra Gambia med våre tradisjonelle oppskrifter, laget med kjærlighet og autentiske ingredienser.</p>
+            <a href="order.html" class="cta-button">
+                <span data-lang="en">Book Now</span>
+                <span data-lang="no">Bestill Nå</span>
+            </a>
+        </div>
+    </section>
+
+    <section id="about" class="about">
+        <div class="container">
+            <h2 class="section-title">
+                <span data-lang="en">About Us</span>
+                <span data-lang="no">Om Oss</span>
+            </h2>
+            <p class="section-subtitle">
+                <span data-lang="en">Bringing authentic West African flavors to your table</span>
+                <span data-lang="no">Bringer autentiske vestafrikanske smaker til ditt bord</span>
+            </p>
+            <div class="about-content">
+                <div style="max-width: 800px; margin: 0 auto;">
+                    <p data-lang="en" style="font-size: 1.1rem; line-height: 1.8; margin-bottom: 1.5rem;">
+                        <strong>Welcome to Gambian Delights!</strong> We are passionate about bringing authentic Gambian home-cooked meals to your table. Our recipes have been passed down through generations, ensuring you get the real taste of West Africa - the same flavors you would experience in a Gambian home.
+                    </p>
+                    <p data-lang="no" style="font-size: 1.1rem; line-height: 1.8; margin-bottom: 1.5rem;">
+                        <strong>Velkommen til Gambian Delights!</strong> Vi er lidenskapelige for å bringe autentiske gambiske hjemmelagde måltider til ditt bord. Våre oppskrifter har blitt videreført gjennom generasjoner, og sikrer at du får den ekte smaken av Vest-Afrika - de samme smakene du ville oppleve i et gambisk hjem.
+                    </p>
+                    
+                    <div style="background: rgba(139, 69, 19, 0.05); padding: 2rem; border-radius: 15px; margin: 2rem 0; border-left: 4px solid var(--primary);">
+                        <h3 style="color: var(--primary); font-size: 1.5rem; margin-bottom: 1rem;">
+                            <span data-lang="en">Our Story</span>
+                            <span data-lang="no">Vår Historie</span>
+                        </h3>
+                        <p data-lang="en" style="line-height: 1.8; margin-bottom: 1rem;">
+                            Born from a love of authentic Gambian cuisine and a desire to share these incredible flavors with the Norwegian community, Gambian Delights was created to bring the warmth and richness of West African cooking to your events and gatherings. Every dish is prepared with care, using traditional methods and the freshest ingredients, just like our grandmothers taught us.
+                        </p>
+                        <p data-lang="no" style="line-height: 1.8; margin-bottom: 1rem;">
+                            Født ut av kjærlighet til autentisk gambisk mat og et ønske om å dele disse utrolige smakene med det norske samfunnet, ble Gambian Delights opprettet for å bringe varmen og rikdommen i vestafrikansk matlaging til dine arrangementer og sammenkomster. Hver rett tilberedes med omsorg, ved hjelp av tradisjonelle metoder og de ferskeste ingrediensene, akkurat som våre bestemødre lærte oss.
+                        </p>
+                        <p data-lang="en" style="line-height: 1.8;">
+                            We believe that food brings people together, and our mission is to make authentic Gambian flavors accessible to everyone - whether you're planning a small family dinner, a corporate event, or a large celebration. Every order is prepared fresh, with attention to detail and a commitment to quality that reflects our passion for authentic West African cuisine.
+                        </p>
+                        <p data-lang="no" style="line-height: 1.8;">
+                            Vi tror at mat bringer mennesker sammen, og vårt oppdrag er å gjøre autentiske gambiske smaker tilgjengelige for alle - enten du planlegger et lite familiekveldsmåltid, et bedriftsarrangement eller en stor feiring. Hver bestilling tilberedes fersk, med oppmerksomhet på detaljer og et engasjement for kvalitet som reflekterer vår lidenskap for autentisk vestafrikansk mat.
+                        </p>
+                    </div>
+
+                    <p data-lang="en" style="margin-top: 1.5rem; line-height: 1.8;">
+                        We use fresh, quality ingredients and traditional cooking methods to create dishes that remind you of home. Whether you're craving our signature Benachin (Jollof Rice), rich Domoda (Peanut Stew), or spicy Yassa, we've got something to satisfy your taste buds.
+                    </p>
+                    <p data-lang="no" style="margin-top: 1.5rem; line-height: 1.8;">
+                        Vi bruker ferske, kvalitetsingredienser og tradisjonelle kokemetoder for å lage retter som minner deg om hjemme. Enten du lengter etter vår signatur Benachin (Jollof Rice), rike Domoda (Peanøttstuing), eller krydret Yassa, har vi noe som vil tilfredsstille smaksløkene dine.
+                    </p>
+                    
+                    <p style="margin-top: 1.5rem; padding: 1.5rem; background: rgba(139, 69, 19, 0.1); border-radius: 15px; border-left: 4px solid var(--primary);">
+                        <strong data-lang="en">🌱 Dietary Accommodations:</strong>
+                        <strong data-lang="no">🌱 Kosttilpasninger:</strong>
+                        <span data-lang="en"> Many of our dishes can be made vegan or are naturally gluten-free. Vegan options use vegetable stock and plant-based ingredients. Please specify your dietary requirements when placing your order, and we'll be happy to accommodate!</span>
+                        <span data-lang="no"> Mange av våre retter kan lages veganske eller er naturlig glutenfrie. Veganske alternativer bruker grønnsaksbuljong og plantebaserte ingredienser. Vennligst spesifiser dine kostkrav når du bestiller, så tilpasser vi oss gjerne!</span>
+                    </p>
+                </div>
+            </div>
+            <div class="features">
+                <div class="feature-card">
+                    <div class="icon">🍽️</div>
+                    <h3>
+                        <span data-lang="en">Takeaway</span>
+                        <span data-lang="no">Takeaway</span>
+                    </h3>
+                    <p>
+                        <span data-lang="en">Quick pickup from our kitchen</span>
+                        <span data-lang="no">Rask henting fra vårt kjøkken</span>
+                    </p>
+                </div>
+                <div class="feature-card">
+                    <div class="icon">🚚</div>
+                    <h3>
+                        <span data-lang="en">Delivery</span>
+                        <span data-lang="no">Levering</span>
+                    </h3>
+                    <p>
+                        <span data-lang="en">Fresh meals delivered to your door</span>
+                        <span data-lang="no">Ferske måltider levert til døren din</span>
+                    </p>
+                </div>
+                <div class="feature-card">
+                    <div class="icon">🎉</div>
+                    <h3>
+                        <span data-lang="en">Catering</span>
+                        <span data-lang="no">Catering</span>
+                    </h3>
+                    <p>
+                        <span data-lang="en">Perfect for events and gatherings</span>
+                        <span data-lang="no">Perfekt for arrangementer og sammenkomster</span>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="menu" class="menu">
+        <div class="container">
+            <h2 class="section-title">
+                <span data-lang="en">Our Menu</span>
+                <span data-lang="no">Vår Meny</span>
+            </h2>
+            <p class="section-subtitle">
+                <span data-lang="en">Traditional dishes made with authentic recipes</span>
+                <span data-lang="no">Tradisjonelle retter laget med autentiske oppskrifter</span>
+            </p>
+            <div style="text-align: center; margin-bottom: 2rem; padding: 1rem; background: rgba(139, 69, 19, 0.1); border-radius: 15px; max-width: 800px; margin-left: auto; margin-right: auto; border-left: 4px solid var(--primary);">
+                <p style="color: var(--text); font-size: 0.95rem; margin-bottom: 0.5rem;">
+                    <strong>
+                        <span data-lang="en">Dietary Options Available:</span>
+                        <span data-lang="no">Kostalternativer Tilgjengelig:</span>
+                    </strong>
+                </p>
+                <div style="display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap;">
+                    <span class="badge badge-gf" style="font-size: 0.7rem;">
+                        <span data-lang="en">Gluten-Free Available</span>
+                        <span data-lang="no">Glutenfri Tilgjengelig</span>
+                    </span>
+                    <span class="badge badge-option" style="font-size: 0.7rem;">
+                        <span data-lang="en">Vegan Options</span>
+                        <span data-lang="no">Veganske Alternativer</span>
+                    </span>
+                </div>
+                <p style="color: var(--text-light); font-size: 0.85rem; margin-top: 0.8rem;">
+                    <span data-lang="en">*Please specify dietary requirements when ordering. Vegan options use vegetable stock and plant-based ingredients.</span>
+                    <span data-lang="no">*Vennligst spesifiser kostkrav når du bestiller. Veganske alternativer bruker grønnsaksbuljong og plantebaserte ingredienser.</span>
+                </p>
+            </div>
+            <div class="menu-grid">
+                <a href="benachin.html" style="text-decoration: none; color: inherit;">
+                    <div class="menu-item" style="cursor: pointer;">
+                        <div class="menu-item-image" style="background: linear-gradient(135deg, #FF6B35, #E85A2B);">
+                            <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; z-index: 2;">
+                                <div style="font-size: 4rem; margin-bottom: 0.5rem;">🍛</div>
+                                <div style="font-size: 0.8rem; opacity: 0.9; color: white;">AI Generated Image</div>
+                            </div>
+                        </div>
+                        <div class="menu-item-content">
+                            <h3>Benachin (Jollof Rice)</h3>
+                            <p class="description">
+                                <span data-lang="en">One-pot rice with meat/fish, vegetables, and aromatic spices - our signature dish!</span>
+                                <span data-lang="no">En-pott ris med kjøtt/fisk, grønnsaker og aromatiske krydder - vår signaturrett!</span>
+                            </p>
+                            <div class="dietary-badges">
+                                <span class="badge badge-gf">
+                                    <span data-lang="en">Gluten-Free</span>
+                                    <span data-lang="no">Glutenfri</span>
+                                </span>
+                                <span class="badge badge-option">
+                                    <span data-lang="en">Vegan Option</span>
+                                    <span data-lang="no">Vegansk Alternativ</span>
+                                </span>
+                            </div>
+                            <p class="price">95 kr</p>
+                            <p style="color: var(--primary); margin-top: 1rem; font-weight: 600;">
+                                <span data-lang="en">View Details →</span>
+                                <span data-lang="no">Se Detaljer →</span>
+                            </p>
+                        </div>
+                    </div>
+                </a>
+                <a href="domoda.html" style="text-decoration: none; color: inherit;">
+                    <div class="menu-item" style="cursor: pointer;">
+                        <div class="menu-item-image" style="background: linear-gradient(135deg, #8B4513, #A0522D);">
+                            <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; z-index: 2;">
+                                <div style="font-size: 4rem; margin-bottom: 0.5rem;">🥜</div>
+                                <div style="font-size: 0.8rem; opacity: 0.9; color: white;">AI Generated Image</div>
+                            </div>
+                        </div>
+                        <div class="menu-item-content">
+                            <h3>Domoda (Peanut Stew)</h3>
+                            <p class="description">
+                                <span data-lang="en">Rich and creamy peanut stew with meat/fish, served with rice</span>
+                                <span data-lang="no">Rik og kremet peanøttstuing med kjøtt/fisk, servert med ris</span>
+                            </p>
+                            <div class="dietary-badges">
+                                <span class="badge badge-gf">
+                                    <span data-lang="en">Gluten-Free</span>
+                                    <span data-lang="no">Glutenfri</span>
+                                </span>
+                                <span class="badge badge-option">
+                                    <span data-lang="en">Vegan Option</span>
+                                    <span data-lang="no">Vegansk Alternativ</span>
+                                </span>
+                            </div>
+                            <p class="price">100 kr</p>
+                            <p style="color: var(--primary); margin-top: 1rem; font-weight: 600;">
+                                <span data-lang="en">View Details →</span>
+                                <span data-lang="no">Se Detaljer →</span>
+                            </p>
+                        </div>
+                    </div>
+                </a>
+                <a href="yassa.html" style="text-decoration: none; color: inherit;">
+                    <div class="menu-item" style="cursor: pointer;">
+                        <div class="menu-item-image" style="background: linear-gradient(135deg, #FFD23F, #FFB300);">
+                            <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; z-index: 2;">
+                                <div style="font-size: 4rem; margin-bottom: 0.5rem;">🍗</div>
+                                <div style="font-size: 0.8rem; opacity: 0.9; color: white;">AI Generated Image</div>
+                            </div>
+                        </div>
+                        <div class="menu-item-content">
+                            <h3>Yassa (Chicken/Fish)</h3>
+                            <p class="description">
+                                <span data-lang="en">Marinated chicken or fish with onions and lemon, served with rice</span>
+                                <span data-lang="no">Marinert kylling eller fisk med løk og sitron, servert med ris</span>
+                            </p>
+                            <div class="dietary-badges">
+                                <span class="badge badge-gf">
+                                    <span data-lang="en">Gluten-Free*</span>
+                                    <span data-lang="no">Glutenfri*</span>
+                                </span>
+                                <span class="badge badge-option">
+                                    <span data-lang="en">Vegan Option</span>
+                                    <span data-lang="no">Vegansk Alternativ</span>
+                                </span>
+                            </div>
+                            <p class="price">105 kr</p>
+                            <p style="color: var(--primary); margin-top: 1rem; font-weight: 600;">
+                                <span data-lang="en">View Details →</span>
+                                <span data-lang="no">Se Detaljer →</span>
+                            </p>
+                        </div>
+                    </div>
+                </a>
+                <a href="fried-rice.html" style="text-decoration: none; color: inherit;">
+                    <div class="menu-item" style="cursor: pointer;">
+                        <div class="menu-item-image" style="background: linear-gradient(135deg, #FF6B35, #E85A2B);">
+                            <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; z-index: 2;">
+                                <div style="font-size: 4rem; margin-bottom: 0.5rem;">🍚</div>
+                                <div style="font-size: 0.8rem; opacity: 0.9; color: white;">AI Generated Image</div>
+                            </div>
+                        </div>
+                        <div class="menu-item-content">
+                            <h3>
+                                <span data-lang="en">Fried Rice</span>
+                                <span data-lang="no">Stekt Ris</span>
+                            </h3>
+                            <p class="description">
+                                <span data-lang="en">Flavorful fried rice with vegetables and traditional Gambian spices</span>
+                                <span data-lang="no">Smakfull stekt ris med grønnsaker og tradisjonelle gambiske krydder</span>
+                            </p>
+                            <div class="dietary-badges">
+                                <span class="badge badge-gf">
+                                    <span data-lang="en">Gluten-Free*</span>
+                                    <span data-lang="no">Glutenfri*</span>
+                                </span>
+                            </div>
+                            <p class="price">110 kr</p>
+                            <p style="color: var(--primary); margin-top: 1rem; font-weight: 600;">
+                                <span data-lang="en">View Details →</span>
+                                <span data-lang="no">Se Detaljer →</span>
+                            </p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <section id="contact" class="contact">
+        <div class="container">
+            <h2 class="section-title">
+                <span data-lang="en">Booking Your Event</span>
+                <span data-lang="no">Bestill Ditt Arrangement</span>
+            </h2>
+            <p class="section-subtitle">
+                <span data-lang="en">Perfect for catering events, parties, and gatherings</span>
+                <span data-lang="no">Perfekt for cateringarrangementer, fester og sammenkomster</span>
+            </p>
+            <div style="text-align: center; margin-bottom: 2rem; display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+                <a href="order.html" class="cta-button" style="display: inline-block; margin-top: 1rem;">
+                    <span data-lang="en">Book Now</span>
+                    <span data-lang="no">Bestill Nå</span>
+                </a>
+                <a href="large-event.html" class="cta-button" style="display: inline-block; margin-top: 1rem; background: var(--secondary);">
+                    <span data-lang="en">Book Events (100-200+ people)</span>
+                    <span data-lang="no">Bestill Arrangementer (100-200+ personer)</span>
+                </a>
+            </div>
+            <div class="contact-grid">
+                <div class="contact-card">
+                    <div style="width: 80px; height: 80px; background: rgba(255,255,255,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2.5rem; margin: 0 auto 1rem;">
+                        📞
+                    </div>
+                    <h3>
+                        <span data-lang="en">Phone Booking</span>
+                        <span data-lang="no">Telefonbestilling</span>
+                    </h3>
+                    <p>
+                        <span data-lang="en">Call us to book your event</span>
+                        <span data-lang="no">Ring oss for å bestille ditt arrangement</span>
+                    </p>
+                    <a href="tel:90714245">90714245</a>
+                </div>
+                <div class="contact-card">
+                    <div style="width: 80px; height: 80px; background: rgba(255,255,255,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2.5rem; margin: 0 auto 1rem;">
+                        ✉️
+                    </div>
+                    <h3>
+                        <span data-lang="en">Email</span>
+                        <span data-lang="no">E-post</span>
+                    </h3>
+                    <p>
+                        <span data-lang="en">Send us an email</span>
+                        <span data-lang="no">Send oss en e-post</span>
+                    </p>
+                    <a href="mailto:gambiandelights@gmail.com">gambiandelights@gmail.com</a>
+                </div>
+                <div class="contact-card">
+                    <div style="width: 80px; height: 80px; background: rgba(255,255,255,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2.5rem; margin: 0 auto 1rem;">
+                        📍
+                    </div>
+                    <h3>
+                        <span data-lang="en">Pickup</span>
+                        <span data-lang="no">Henting</span>
+                    </h3>
+                    <p>
+                        <span data-lang="en">Collect from our kitchen</span>
+                        <span data-lang="no">Hent fra vårt kjøkken</span>
+                    </p>
+                    <p style="font-size: 1rem; margin-top: 1rem;">Vitaminveien 2</p>
+                </div>
+                <div class="contact-card">
+                    <div style="width: 80px; height: 80px; background: rgba(255,255,255,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2.5rem; margin: 0 auto 1rem;">
+                        🚚
+                    </div>
+                    <h3>
+                        <span data-lang="en">Delivery</span>
+                        <span data-lang="no">Levering</span>
+                    </h3>
+                    <p>
+                        <span data-lang="en">We deliver locally</span>
+                        <span data-lang="no">Vi leverer lokalt</span>
+                    </p>
+                    <p style="font-size: 1rem; margin-top: 1rem;">
+                        <span data-lang="en">Minimum order: 150 kr<br>Delivery fee applies</span>
+                        <span data-lang="no">Minimumsbestilling: 150 kr<br>Leveringsgebyr gjelder</span>
+                    </p>
+                </div>
+            </div>
+
+            <!-- Delivery Area & Fees Section -->
+            <div style="background: white; border-radius: 20px; padding: 3rem; margin: 3rem 0; box-shadow: 0 10px 40px rgba(0,0,0,0.1);">
+                <h2 class="section-title" style="text-align: center; margin-bottom: 2rem;">
+                    <span data-lang="en">Delivery Areas & Fees</span>
+                    <span data-lang="no">Leveringsområder & Gebyrer</span>
+                </h2>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 2rem; margin-bottom: 2rem;">
+                    <div style="background: var(--cream); padding: 2rem; border-radius: 15px; border: 2px solid var(--primary);">
+                        <h3 style="color: var(--primary); font-size: 1.3rem; margin-bottom: 1rem;">
+                            <span data-lang="en">Zone 1 - Central Areas</span>
+                            <span data-lang="no">Sone 1 - Sentrale Områder</span>
+                        </h3>
+                        <p style="color: var(--text-light); margin-bottom: 1rem; font-size: 0.95rem;">
+                            <span data-lang="en">Oslo city center, Majorstuen, Grünerløkka, Sagene, St. Hanshaugen</span>
+                            <span data-lang="no">Oslo sentrum, Majorstuen, Grünerløkka, Sagene, St. Hanshaugen</span>
+                        </p>
+                        <div style="font-size: 1.5rem; font-weight: 700; color: var(--primary);">
+                            <span data-lang="en">Free delivery</span>
+                            <span data-lang="no">Gratis levering</span>
+                        </div>
+                        <p style="font-size: 0.9rem; color: var(--text-light); margin-top: 0.5rem;">
+                            <span data-lang="en">(Orders 300 kr+)</span>
+                            <span data-lang="no">(Bestillinger 300 kr+)</span>
+                        </p>
+                        <p style="font-size: 0.9rem; color: var(--text-light); margin-top: 0.5rem;">
+                            <span data-lang="en">Otherwise: 50 kr</span>
+                            <span data-lang="no">Ellers: 50 kr</span>
+                        </p>
+                    </div>
+                    <div style="background: var(--cream); padding: 2rem; border-radius: 15px; border: 2px solid var(--cream);">
+                        <h3 style="color: var(--primary); font-size: 1.3rem; margin-bottom: 1rem;">
+                            <span data-lang="en">Zone 2 - Extended Areas</span>
+                            <span data-lang="no">Sone 2 - Utvidede Områder</span>
+                        </h3>
+                        <p style="color: var(--text-light); margin-bottom: 1rem; font-size: 0.95rem;">
+                            <span data-lang="en">Frogner, Tøyen, Gamle Oslo, Nordstrand, Vestre Aker</span>
+                            <span data-lang="no">Frogner, Tøyen, Gamle Oslo, Nordstrand, Vestre Aker</span>
+                        </p>
+                        <div style="font-size: 1.5rem; font-weight: 700; color: var(--primary);">
+                            75 kr
+                        </div>
+                        <p style="font-size: 0.9rem; color: var(--text-light); margin-top: 0.5rem;">
+                            <span data-lang="en">Delivery fee</span>
+                            <span data-lang="no">Leveringsgebyr</span>
+                        </p>
+                    </div>
+                    <div style="background: var(--cream); padding: 2rem; border-radius: 15px; border: 2px solid var(--cream);">
+                        <h3 style="color: var(--primary); font-size: 1.3rem; margin-bottom: 1rem;">
+                            <span data-lang="en">Zone 3 - Outer Areas</span>
+                            <span data-lang="no">Sone 3 - Ytre Områder</span>
+                        </h3>
+                        <p style="color: var(--text-light); margin-bottom: 1rem; font-size: 0.95rem;">
+                            <span data-lang="en">Bærum, Asker, Lillestrøm, Ski, Nesodden</span>
+                            <span data-lang="no">Bærum, Asker, Lillestrøm, Ski, Nesodden</span>
+                        </p>
+                        <div style="font-size: 1.5rem; font-weight: 700; color: var(--primary);">
+                            150 kr
+                        </div>
+                        <p style="font-size: 0.9rem; color: var(--text-light); margin-top: 0.5rem;">
+                            <span data-lang="en">Delivery fee</span>
+                            <span data-lang="no">Leveringsgebyr</span>
+                        </p>
+                        <p style="font-size: 0.85rem; color: var(--text-light); margin-top: 0.5rem; font-style: italic;">
+                            <span data-lang="en">Contact us for availability</span>
+                            <span data-lang="no">Kontakt oss for tilgjengelighet</span>
+                        </p>
+                    </div>
+                </div>
+                <div style="background: rgba(139, 69, 19, 0.1); padding: 1.5rem; border-radius: 15px; text-align: center;">
+                    <p style="color: var(--text); font-size: 0.95rem;">
+                        <span data-lang="en"><strong>Not sure about your area?</strong> Contact us at <a href="mailto:gambiandelights@gmail.com" style="color: var(--primary); text-decoration: underline;">gambiandelights@gmail.com</a> or call <a href="tel:90714245" style="color: var(--primary); text-decoration: underline;">90714245</a> to confirm delivery availability and fees.</span>
+                        <span data-lang="no"><strong>Usikker på ditt område?</strong> Kontakt oss på <a href="mailto:gambiandelights@gmail.com" style="color: var(--primary); text-decoration: underline;">gambiandelights@gmail.com</a> eller ring <a href="tel:90714245" style="color: var(--primary); text-decoration: underline;">90714245</a> for å bekrefte leveringstilgjengelighet og gebyrer.</span>
+                    </p>
+                </div>
+            </div>
+            <div class="hours-card">
+                <h3>
+                    <span data-lang="en">Opening Hours</span>
+                    <span data-lang="no">Åpningstider</span>
+                </h3>
+                <p><strong data-lang="en">Monday - Friday:</strong><strong data-lang="no">Mandag - Fredag:</strong> 11:00 - 20:00</p>
+                <p><strong data-lang="en">Saturday:</strong><strong data-lang="no">Lørdag:</strong> 12:00 - 21:00</p>
+                <p><strong data-lang="en">Sunday:</strong><strong data-lang="no">Søndag:</strong> 12:00 - 18:00</p>
+            </div>
+
+            <!-- Booking Calendar / Availability Checker -->
+            <div style="background: white; border-radius: 20px; padding: 3rem; margin: 3rem 0; box-shadow: 0 10px 40px rgba(0,0,0,0.1);">
+                <h2 class="section-title" style="text-align: center; margin-bottom: 1rem;">
+                    <span data-lang="en">Check Availability</span>
+                    <span data-lang="no">Sjekk Tilgjengelighet</span>
+                </h2>
+                <p class="section-subtitle" style="text-align: center; margin-bottom: 2rem;">
+                    <span data-lang="en">Select your event date to see if we're available</span>
+                    <span data-lang="no">Velg din arrangementsdato for å se om vi er tilgjengelige</span>
+                </p>
+                <div style="max-width: 500px; margin: 0 auto;">
+                    <div style="margin-bottom: 1.5rem;">
+                        <label style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: var(--text); text-align: center;">
+                            <span data-lang="en">Event Date</span>
+                            <span data-lang="no">Arrangementsdato</span>
+                        </label>
+                        <input type="date" id="availabilityDate" style="width: 100%; padding: 1rem; border: 2px solid var(--primary); border-radius: 10px; font-size: 1.1rem; text-align: center;" onchange="checkAvailability()">
+                    </div>
+                    <div id="availabilityResult" style="padding: 1.5rem; border-radius: 15px; text-align: center; font-size: 1.1rem; min-height: 60px; display: flex; align-items: center; justify-content: center;">
+                        <p style="color: var(--text-light);">
+                            <span data-lang="en">Select a date to check availability</span>
+                            <span data-lang="no">Velg en dato for å sjekke tilgjengelighet</span>
+                        </p>
+                    </div>
+                    <div style="text-align: center; margin-top: 1.5rem;">
+                        <a href="order.html" class="cta-button" style="display: inline-block;">
+                            <span data-lang="en">Book Now</span>
+                            <span data-lang="no">Bestill Nå</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Loyalty Program Section -->
+            <div id="loyalty" style="background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; border-radius: 20px; padding: 3rem; margin: 3rem 0; box-shadow: 0 10px 40px rgba(0,0,0,0.15);">
+                <h2 class="section-title" style="text-align: center; margin-bottom: 1rem; color: white;">
+                    <span data-lang="en">🎁 Loyalty Program</span>
+                    <span data-lang="no">🎁 Lojalitetsprogram</span>
+                </h2>
+                <p class="section-subtitle" style="text-align: center; margin-bottom: 2rem; color: rgba(255,255,255,0.9);">
+                    <span data-lang="en">Get rewarded for being a loyal customer!</span>
+                    <span data-lang="no">Få belønning for å være en lojal kunde!</span>
+                </p>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 2rem; margin-bottom: 2rem;">
+                    <div style="background: rgba(255,255,255,0.15); backdrop-filter: blur(10px); padding: 2rem; border-radius: 15px; text-align: center; border: 2px solid rgba(255,255,255,0.3);">
+                        <div style="font-size: 3rem; margin-bottom: 1rem;">🎯</div>
+                        <h3 style="font-size: 1.3rem; margin-bottom: 1rem;">
+                            <span data-lang="en">5 Orders</span>
+                            <span data-lang="no">5 Bestillinger</span>
+                        </h3>
+                        <p style="font-size: 1.2rem; font-weight: 700; margin-bottom: 0.5rem;">
+                            <span data-lang="en">10% Discount</span>
+                            <span data-lang="no">10% Rabatt</span>
+                        </p>
+                        <p style="font-size: 0.9rem; opacity: 0.9;">
+                            <span data-lang="en">On your next order</span>
+                            <span data-lang="no">På din neste bestilling</span>
+                        </p>
+                    </div>
+                    <div style="background: rgba(255,255,255,0.2); backdrop-filter: blur(10px); padding: 2rem; border-radius: 15px; text-align: center; border: 2px solid rgba(255,255,255,0.4); transform: scale(1.05);">
+                        <div style="font-size: 3rem; margin-bottom: 1rem;">⭐</div>
+                        <h3 style="font-size: 1.3rem; margin-bottom: 1rem;">
+                            <span data-lang="en">10 Orders</span>
+                            <span data-lang="no">10 Bestillinger</span>
+                        </h3>
+                        <p style="font-size: 1.2rem; font-weight: 700; margin-bottom: 0.5rem;">
+                            <span data-lang="en">15% Discount</span>
+                            <span data-lang="no">15% Rabatt</span>
+                        </p>
+                        <p style="font-size: 0.9rem; opacity: 0.9;">
+                            <span data-lang="en">Plus free delivery</span>
+                            <span data-lang="no">Pluss gratis levering</span>
+                        </p>
+                    </div>
+                    <div style="background: rgba(255,255,255,0.15); backdrop-filter: blur(10px); padding: 2rem; border-radius: 15px; text-align: center; border: 2px solid rgba(255,255,255,0.3);">
+                        <div style="font-size: 3rem; margin-bottom: 1rem;">👑</div>
+                        <h3 style="font-size: 1.3rem; margin-bottom: 1rem;">
+                            <span data-lang="en">20 Orders</span>
+                            <span data-lang="no">20 Bestillinger</span>
+                        </h3>
+                        <p style="font-size: 1.2rem; font-weight: 700; margin-bottom: 0.5rem;">
+                            <span data-lang="en">20% Discount</span>
+                            <span data-lang="no">20% Rabatt</span>
+                        </p>
+                        <p style="font-size: 0.9rem; opacity: 0.9;">
+                            <span data-lang="en">VIP status + perks</span>
+                            <span data-lang="no">VIP-status + fordeler</span>
+                        </p>
+                    </div>
+                </div>
+                <div style="background: rgba(255,255,255,0.2); padding: 1.5rem; border-radius: 15px; text-align: center; backdrop-filter: blur(10px);">
+                    <p style="font-size: 1rem; margin-bottom: 1rem;">
+                        <span data-lang="en"><strong>How it works:</strong> Simply mention your previous order numbers when placing a new order, and we'll track your loyalty points automatically. Discounts apply to your next order!</span>
+                        <span data-lang="no"><strong>Hvordan det fungerer:</strong> Bare nevne dine tidligere ordrenumre når du legger inn en ny bestilling, så sporer vi lojalitetspoengene dine automatisk. Rabatter gjelder på din neste bestilling!</span>
+                    </p>
+                    <p style="font-size: 0.9rem; opacity: 0.9;">
+                        <span data-lang="en">💡 Tip: Save your order numbers to track your progress!</span>
+                        <span data-lang="no">💡 Tips: Lagre dine ordrenumre for å spore fremgangen din!</span>
+                    </p>
+                </div>
+            </div>
+            <div class="payment-methods">
+                <h3>
+                    <span data-lang="en">💳 Accepted Payment Methods</span>
+                    <span data-lang="no">💳 Aksepterte Betalingsmetoder</span>
+                </h3>
+                <div class="payment-icons">
+                    <div class="payment-icon klarna">Klarna</div>
+                    <div class="payment-icon visa">Visa</div>
+                    <div class="payment-icon mastercard">Mastercard</div>
+                    <div class="payment-icon vipps">Vipps</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Customer Reviews Section -->
+    <section id="reviews" class="reviews" style="background: var(--cream); padding: 5rem 0;">
+        <div class="container">
+            <h2 class="section-title">
+                <span data-lang="en">What Our Customers Say</span>
+                <span data-lang="no">Hva Våre Kunder Sier</span>
+            </h2>
+            <p class="section-subtitle">
+                <span data-lang="en">Verified reviews from real customers</span>
+                <span data-lang="no">Verifiserte anmeldelser fra ekte kunder</span>
+            </p>
+            
+            <div id="reviewsContainer" class="reviews-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; margin: 3rem 0;">
+                <!-- Reviews will be loaded here -->
+            </div>
+
+            <!-- Submit Review Form -->
+            <div style="background: white; border-radius: 20px; padding: 3rem; margin-top: 3rem; box-shadow: 0 10px 40px rgba(0,0,0,0.1); max-width: 600px; margin-left: auto; margin-right: auto;">
+                <h3 style="color: var(--primary); font-size: 1.8rem; margin-bottom: 1rem; text-align: center;">
+                    <span data-lang="en">Leave a Review</span>
+                    <span data-lang="no">Skriv en Anmeldelse</span>
+                </h3>
+                <p style="color: var(--text-light); text-align: center; margin-bottom: 2rem; font-size: 0.95rem;">
+                    <span data-lang="en">To ensure authenticity, please provide your order number from your confirmation email.</span>
+                    <span data-lang="no">For å sikre autentisitet, vennligst oppgi ditt ordrenummer fra din bekreftelses-e-post.</span>
+                </p>
+                <form id="reviewForm" style="display: flex; flex-direction: column; gap: 1.5rem;">
+                    <div>
+                        <label style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: var(--text);">
+                            <span data-lang="en">Order Number *</span>
+                            <span data-lang="no">Ordrenummer *</span>
+                        </label>
+                        <input type="text" id="orderNumber" name="orderNumber" required 
+                               placeholder="e.g., GD-2024-00123"
+                               style="width: 100%; padding: 1rem; border: 2px solid #e0e0e0; border-radius: 10px; font-size: 1rem;">
+                        <small style="color: var(--text-light); font-size: 0.85rem;">
+                            <span data-lang="en">Found in your order confirmation</span>
+                            <span data-lang="no">Finnes i din bestillingsbekreftelse</span>
+                        </small>
+                    </div>
+                    <div>
+                        <label style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: var(--text);">
+                            <span data-lang="en">Your Name *</span>
+                            <span data-lang="no">Ditt Navn *</span>
+                        </label>
+                        <input type="text" id="reviewerName" name="reviewerName" required 
+                               style="width: 100%; padding: 1rem; border: 2px solid #e0e0e0; border-radius: 10px; font-size: 1rem;">
+                    </div>
+                    <div>
+                        <label style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: var(--text);">
+                            <span data-lang="en">Rating *</span>
+                            <span data-lang="no">Vurdering *</span>
+                        </label>
+                        <div style="display: flex; gap: 0.5rem; font-size: 2rem;">
+                            <span style="cursor: pointer;" onclick="setRating(1)" id="star1">☆</span>
+                            <span style="cursor: pointer;" onclick="setRating(2)" id="star2">☆</span>
+                            <span style="cursor: pointer;" onclick="setRating(3)" id="star3">☆</span>
+                            <span style="cursor: pointer;" onclick="setRating(4)" id="star4">☆</span>
+                            <span style="cursor: pointer;" onclick="setRating(5)" id="star5">☆</span>
+                        </div>
+                        <input type="hidden" id="rating" name="rating" required>
+                    </div>
+                    <div>
+                        <label style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: var(--text);">
+                            <span data-lang="en">Your Review *</span>
+                            <span data-lang="no">Din Anmeldelse *</span>
+                        </label>
+                        <textarea id="reviewText" name="reviewText" required rows="4"
+                                  placeholder="Tell us about your experience..."
+                                  style="width: 100%; padding: 1rem; border: 2px solid #e0e0e0; border-radius: 10px; font-size: 1rem; font-family: 'Poppins', sans-serif;"></textarea>
+                    </div>
+                    <button type="submit" style="background: var(--primary); color: white; padding: 1rem 2rem; border: none; border-radius: 50px; font-size: 1.1rem; font-weight: 700; cursor: pointer; transition: all 0.3s;">
+                        <span data-lang="en">Submit Review</span>
+                        <span data-lang="no">Send Anmeldelse</span>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 Gambian Delights. All rights reserved.</p>
+            <p style="margin-top: 1.5rem; font-size: 0.95rem; opacity: 0.8;">
+                <span data-lang="en">Authentic Gambian Flavors, Made with Love</span>
+                <span data-lang="no">Autentiske Gambiske Smaker, Laget med Kjærlighet</span>
+            </p>
+            <p style="margin-top: 1rem; font-size: 0.85rem; opacity: 0.7;">
+                <a href="policy.html" style="color: rgba(255,255,255,0.8); text-decoration: none;">
+                    <span data-lang="en">Ordering Policy & Cancellation Terms</span>
+                    <span data-lang="no">Bestillingspolicy & Kanselleringsvilkår</span>
+                </a>
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Add scroll animation
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.animation = 'fadeInUp 0.6s ease-out forwards';
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.menu-item, .contact-card, .feature-card').forEach(el => {
+            observer.observe(el);
+        });
+
+        // Language switching function
+        function switchLanguage(lang) {
+            document.body.classList.remove('lang-no', 'lang-en');
+            document.body.classList.add('lang-' + lang);
+            
+            // Update button states
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.getElementById('lang-' + lang).classList.add('active');
+            
+            // Save preference
+            localStorage.setItem('preferred-language', lang);
+        }
+
+        // Load saved language preference
+        const savedLang = localStorage.getItem('preferred-language') || 'en';
+        switchLanguage(savedLang);
+    </script>
+</body>
+</html>

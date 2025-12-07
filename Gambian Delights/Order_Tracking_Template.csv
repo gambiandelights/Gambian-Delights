@@ -1,0 +1,4 @@
+Order_Number,Date,Time,Customer_Name,Phone,Order_Details,Quantity,Total_Amount,Payment_Method,Delivery_Pickup,Address,Status,Feedback_Rating,Feedback_Notes
+001,2024-01-01,12:00,John Doe,07123456789,"Benachin x1, Drink x1",2,11.00,Cash,Pickup,,Completed,5,Great food!
+002,2024-01-01,18:30,Jane Smith,07987654321,"Domoda x2, Plantain x1",3,20.50,Bank Transfer,Delivery,"123 Main St",Completed,4,Very good, will order again
+
