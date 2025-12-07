@@ -7,7 +7,6 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <script src="https://js.stripe.com/v3/"></script>
     <style>
         :root {
             --primary: #8B4513;
@@ -772,6 +771,7 @@
             const lang = document.querySelector('[data-lang].active')?.getAttribute('data-lang') || 'en';
             submitBtn.innerHTML = lang === 'en' ? 'Processing...' : 'Behandler...';
 
+
             // Store order data temporarily for after payment
             sessionStorage.setItem('pendingOrder', JSON.stringify({
                 orderNumber: orderNumber,
@@ -779,9 +779,10 @@
                 deposit: deposit
             }));
 
-            // Create payment request
-            // Use Netlify Functions endpoint (or your backend URL)
-            const apiUrl = '/.netlify/functions/create-checkout-session';
+            // Create Stripe Payment Link via backend API FIRST (before Formspree)
+            console.log('1. Calling API to create payment link...');
+            const apiUrl = 'https://gambian-delights.onrender.com/api/create-payment';
+            console.log('2. API URL:', apiUrl);
             
             fetch(apiUrl, {
                 method: 'POST',
@@ -789,52 +790,116 @@
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    orderNumber: orderNumber,
-                    amount: deposit * 100, // Stripe uses smallest currency unit (øre for NOK)
-                    currency: 'nok',
-                    customerEmail: orderData.contact.email,
-                    customerName: orderData.contact.name,
-                    orderDetails: {
-                        eventName: orderData.event.name,
-                        eventDate: orderData.event.date,
-                        total: orderData.total,
-                        deposit: deposit
-                    }
+                    total: orderData.total,
+                    items: orderData.dishes.map(dish => ({
+                        name: dish.name,
+                        quantity: dish.quantity,
+                        price: dish.price
+                    })),
+                    orderNumber: orderNumber
                 })
             })
             .then(response => {
+                console.log('3. API response status:', response.status, response.ok);
                 if (!response.ok) {
-                    throw new Error('Failed to create checkout session');
+                    return response.text().then(text => {
+                        console.error('4. API error response:', text);
+                        throw new Error(`API error: ${response.status} - ${text}`);
+                    });
                 }
                 return response.json();
             })
             .then(data => {
-                if (data.sessionId) {
-                    // Initialize Stripe
-                    const stripePublishableKey = 'pk_test_51Sbi5yJzNl5yX8PmbfBccF0k3L6dCU9bNL3eUX5x9ZRCrWXW95oWVfYVMuNJRd7TYYt9VUbovwOCrVIL0qifxQKs00MPXmNAEq';
-                    const stripe = Stripe(stripePublishableKey);
-                    return stripe.redirectToCheckout({ sessionId: data.sessionId });
+                console.log('5. API data received:', data);
+                if (data.paymentLink) {
+                    console.log('6. Payment link received, submitting to Formspree...');
+                    // Submit to Formspree in background (don't wait for it)
+                    submitOrderToFormspree(orderNumber, orderData, deposit, 'pending')
+                        .catch(err => console.error('Formspree error (non-critical):', err));
+                    
+                    console.log('7. Redirecting to payment link...');
+                    // Redirect to Stripe Payment Link
+                    window.location.href = data.paymentLink;
                 } else {
-                    throw new Error('No session ID returned');
+                    throw new Error('No payment link received from API');
                 }
             })
             .catch(error => {
-                console.error('Payment error:', error);
+                console.error('8. Payment link creation error:', error);
                 // Fallback: Show manual payment instructions
                 submitBtn.disabled = false;
                 const currentLang = document.querySelector('[data-lang].active')?.getAttribute('data-lang') || 'en';
                 submitBtn.innerHTML = currentLang === 'en' ? 'Submit Booking' : 'Send Bestilling';
                 
-                if (currentLang === 'en') {
-                    alert(`Payment system is being set up. For now, please complete your order and we'll send you payment instructions via email.\n\nOrder Number: ${orderNumber}\nDeposit Required: ${deposit} kr`);
-                } else {
-                    alert(`Betalingssystemet blir satt opp. For nå, vennligst fullfør bestillingen din så sender vi deg betalingsinstruksjoner via e-post.\n\nOrdrenummer: ${orderNumber}\nDepositum påkrevd: ${deposit} kr`);
-                }
+                // Still submit to Formspree even if payment fails
+                submitOrderToFormspree(orderNumber, orderData, deposit, 'pending')
+                    .catch(err => console.error('Formspree error:', err));
                 
-                // Submit order to Formspree with payment pending note
-                submitOrderToFormspree(orderNumber, orderData, deposit, 'pending');
+                if (currentLang === 'en') {
+                    alert(`✅ Order submitted!\n\nOrder Number: ${orderNumber}\nDeposit Required: ${deposit} kr\n\nWe've received your order. Payment system is temporarily unavailable. We'll send you payment instructions via email shortly.`);
+                } else {
+                    alert(`✅ Bestilling sendt!\n\nOrdrenummer: ${orderNumber}\nDepositum påkrevd: ${deposit} kr\n\nVi har mottatt din bestilling. Betalingssystemet er midlertidig utilgjengelig. Vi sender deg betalingsinstruksjoner via e-post snart.`);
+                }
+                document.getElementById('orderForm').reset();
+                updateSummary();
             });
         });
+
+
+        // Function to get Stripe Payment Link based on amount
+        function getStripePaymentLink(amount, orderNumber) {
+            // Stripe Payment Links - You need to create these in Stripe Dashboard
+            // Go to: https://dashboard.stripe.com/payment-links
+            // Create payment links for different amounts (100, 200, 300, 500, 1000, 2000, 5000, 10000)
+            // Then replace the links below with your actual Stripe Payment Links
+            
+            const paymentLinks = {
+                100: 'https://buy.stripe.com/test_28E9AUf8M3my7963bIgw000', // Replace with your 100 kr link
+                200: 'https://buy.stripe.com/test_28E9AUf8M3my7963bIgw000', // Replace with your 200 kr link
+                300: 'https://buy.stripe.com/test_28E9AUf8M3my7963bIgw000', // Replace with your 300 kr link
+                500: 'https://buy.stripe.com/test_28E9AUf8M3my7963bIgw000', // Replace with your 500 kr link
+                1000: 'https://buy.stripe.com/test_28E9AUf8M3my7963bIgw000', // Replace with your 1000 kr link
+                2000: 'https://buy.stripe.com/test_28E9AUf8M3my7963bIgw000', // Replace with your 2000 kr link
+                5000: 'https://buy.stripe.com/test_28E9AUf8M3my7963bIgw000', // Replace with your 5000 kr link
+                10000: 'https://buy.stripe.com/test_28E9AUf8M3my7963bIgw000' // Replace with your 10000 kr link
+            };
+            
+            // Find the closest amount (round up)
+            const amounts = Object.keys(paymentLinks).map(Number).sort((a, b) => a - b);
+            const selectedAmount = amounts.find(a => a >= amount) || amounts[amounts.length - 1];
+            
+            if (paymentLinks[selectedAmount]) {
+                // Add order number as reference in the URL (if Stripe supports it)
+                return paymentLinks[selectedAmount] + (paymentLinks[selectedAmount].includes('?') ? '&' : '?') + 'client_reference_id=' + encodeURIComponent(orderNumber);
+            }
+            
+            return null;
+        }
+
+        // Check for payment success callback
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('payment') === 'success') {
+            const pendingOrder = JSON.parse(sessionStorage.getItem('pendingOrder') || '{}');
+            if (pendingOrder.orderNumber) {
+                submitOrderToFormspree(
+                    pendingOrder.orderNumber,
+                    pendingOrder.orderData,
+                    pendingOrder.deposit,
+                    'paid'
+                ).then(() => {
+                    sessionStorage.removeItem('pendingOrder');
+                    const lang = document.querySelector('[data-lang].active')?.getAttribute('data-lang') || 'en';
+                    if (lang === 'en') {
+                        alert(`✅ Payment successful!\n\nOrder Number: ${pendingOrder.orderNumber}\nDeposit Paid: ${pendingOrder.deposit} kr\n\nWe've received your order and payment. We'll contact you soon to confirm. Please save your order number!`);
+                    } else {
+                        alert(`✅ Betaling vellykket!\n\nOrdrenummer: ${pendingOrder.orderNumber}\nDepositum betalt: ${pendingOrder.deposit} kr\n\nVi har mottatt din bestilling og betaling. Vi vil kontakte deg snart for å bekrefte. Vennligst lagre ordrenummeret!`);
+                    }
+                    document.getElementById('orderForm').reset();
+                    updateSummary();
+                    window.history.replaceState({}, document.title, window.location.pathname);
+                });
+            }
+        }
 
         // Function to submit order to Formspree
         function submitOrderToFormspree(orderNumber, orderData, deposit, paymentStatus) {
@@ -898,32 +963,6 @@
             });
         }
 
-        // Check for payment success callback
-        const urlParams = new URLSearchParams(window.location.search);
-        if (urlParams.get('payment') === 'success') {
-            const pendingOrder = JSON.parse(sessionStorage.getItem('pendingOrder') || '{}');
-            if (pendingOrder.orderNumber) {
-                submitOrderToFormspree(
-                    pendingOrder.orderNumber,
-                    pendingOrder.orderData,
-                    pendingOrder.deposit,
-                    'paid'
-                ).then(() => {
-                    sessionStorage.removeItem('pendingOrder');
-                    const lang = document.querySelector('[data-lang].active')?.getAttribute('data-lang') || 'en';
-                    if (lang === 'en') {
-                        alert(`✅ Payment successful!\n\nOrder Number: ${pendingOrder.orderNumber}\nDeposit Paid: ${pendingOrder.deposit} kr\n\nWe've received your order and payment. We'll contact you soon to confirm. Please save your order number!`);
-                    } else {
-                        alert(`✅ Betaling vellykket!\n\nOrdrenummer: ${pendingOrder.orderNumber}\nDepositum betalt: ${pendingOrder.deposit} kr\n\nVi har mottatt din bestilling og betaling. Vi vil kontakte deg snart for å bekrefte. Vennligst lagre ordrenummeret!`);
-                    }
-                    // Reset form
-                    document.getElementById('orderForm').reset();
-                    updateSummary();
-                    // Clean URL
-                    window.history.replaceState({}, document.title, window.location.pathname);
-                });
-            }
-        }
 
         // Language switching function
         function switchLanguage(lang) {
@@ -952,4 +991,3 @@
     </script>
 </body>
 </html>
-
