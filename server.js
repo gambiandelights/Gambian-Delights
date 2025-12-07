@@ -6,7 +6,10 @@ const Stripe = require('stripe');
 const cors = require('cors');
 
 const app = express();
-app.use(cors());
+app.use(cors({
+  origin: ['https://gambiandelights.github.io', 'https://gambiandelights.netlify.app', 'http://localhost:3000'],
+  credentials: true
+}));
 app.use(express.json());
 
 // Check for required environment variables
