@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ordering Policy & Cancellation - Gambian Delights</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #8B4513;
+            --primary-dark: #6B3410;
+            --secondary: #A0522D;
+            --accent: #CD853F;
+            --dark: #3E2723;
+            --light: #FFF8F0;
+            --cream: #F5F1E8;
+            --gray: #F5F1E8;
+            --text: #3E2723;
+            --text-light: #5D4037;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: var(--cream);
+            color: var(--text);
+            line-height: 1.8;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #8B4513 0%, #A0522D 50%, #6B3410 100%);
+            color: white;
+            padding: 1.5rem 0;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo-link {
+            text-decoration: none;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo-link img {
+            height: 60px;
+            border-radius: 10px;
+        }
+
+        .logo-link h1 {
+            font-size: 1.8rem;
+            font-weight: 800;
+        }
+
+        .back-link {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: opacity 0.3s;
+        }
+
+        .back-link:hover {
+            opacity: 0.8;
+        }
+
+        .language-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            display: flex;
+            gap: 0.5rem;
+            background: rgba(255,255,255,0.95);
+            padding: 0.5rem;
+            border-radius: 50px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            backdrop-filter: blur(10px);
+        }
+
+        .lang-btn {
+            padding: 0.5rem 1rem;
+            border: 2px solid var(--primary);
+            background: white;
+            color: var(--primary);
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            font-size: 0.9rem;
+        }
+
+        .lang-btn.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        .lang-btn:hover {
+            transform: scale(1.05);
+        }
+
+        [data-lang="no"] {
+            display: none;
+        }
+
+        body.lang-no [data-lang="en"] {
+            display: none;
+        }
+
+        body.lang-no [data-lang="no"] {
+            display: block;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 3rem 20px;
+        }
+
+        .policy-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .policy-header h1 {
+            font-size: 3rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+            font-weight: 800;
+        }
+
+        .policy-header p {
+            font-size: 1.2rem;
+            color: var(--text-light);
+        }
+
+        .policy-section {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 20px;
+            margin-bottom: 2rem;
+            box-shadow: 0 5px 25px rgba(0,0,0,0.08);
+        }
+
+        .policy-section h2 {
+            color: var(--primary);
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .policy-section ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .policy-section li {
+            padding: 1rem 0;
+            border-bottom: 1px solid #e0e0e0;
+            padding-left: 2rem;
+            position: relative;
+        }
+
+        .policy-section li:last-child {
+            border-bottom: none;
+        }
+
+        .policy-section li::before {
+            content: '•';
+            position: absolute;
+            left: 0;
+            color: var(--primary);
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .policy-section strong {
+            color: var(--dark);
+            font-weight: 700;
+        }
+
+        .highlight-box {
+            background: rgba(139, 69, 19, 0.1);
+            padding: 1.5rem;
+            border-radius: 15px;
+            border-left: 4px solid var(--primary);
+            margin: 1.5rem 0;
+        }
+
+        .warning-box {
+            background: rgba(255, 152, 0, 0.1);
+            padding: 1.5rem;
+            border-radius: 15px;
+            border-left: 4px solid #FF9800;
+            margin: 1.5rem 0;
+        }
+
+        .info-box {
+            background: rgba(76, 175, 80, 0.1);
+            padding: 1.5rem;
+            border-radius: 15px;
+            border-left: 4px solid #4CAF50;
+            margin: 1.5rem 0;
+        }
+
+        .contact-info {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 2rem;
+            border-radius: 20px;
+            text-align: center;
+            margin-top: 3rem;
+        }
+
+        .contact-info h3 {
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+
+        .contact-info a {
+            color: white;
+            text-decoration: underline;
+        }
+
+        @media (max-width: 768px) {
+            .policy-header h1 {
+                font-size: 2rem;
+            }
+
+            .policy-section {
+                padding: 1.5rem;
+            }
+
+            .language-toggle {
+                top: 10px;
+                right: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="language-toggle">
+        <button class="lang-btn active" onclick="switchLanguage('en')" id="lang-en">EN</button>
+        <button class="lang-btn" onclick="switchLanguage('no')" id="lang-no">NO</button>
+    </div>
+
+    <div class="header">
+        <div class="header-content">
+            <a href="index.html" class="logo-link">
+                <img src="IMG_2553.png" alt="Logo">
+                <h1>Gambian Delights</h1>
+            </a>
+            <a href="index.html" class="back-link">← Back to Home</a>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="policy-header">
+            <h1>
+                <span data-lang="en">Ordering Policy & Cancellation Terms</span>
+                <span data-lang="no">Bestillingspolicy & Kanselleringsvilkår</span>
+            </h1>
+            <p>
+                <span data-lang="en">To ensure quality and a smooth process for all customers</span>
+                <span data-lang="no">For å sikre god kvalitet og en smidig prosess for alle kunder</span>
+            </p>
+        </div>
+
+        <!-- Booking and Planning -->
+        <div class="policy-section">
+            <h2>🗓️ 
+                <span data-lang="en">Booking and Planning</span>
+                <span data-lang="no">Bestilling og planlegging</span>
+            </h2>
+            <ul>
+                <li>
+                    <span data-lang="en"><strong>Orders must be placed at least 14 days before the event.</strong></span>
+                    <span data-lang="no"><strong>Bestilling må gjøres minst 14 dager før event.</strong></span>
+                </li>
+                <li>
+                    <span data-lang="en"><strong>Planning and changes must be finalized no later than 7 days before the event.</strong></span>
+                    <span data-lang="no"><strong>Planlegging og endringer må være ferdige senest 7 dager før event.</strong></span>
+                </li>
+                <li>
+                    <span data-lang="en">Any changes requested after the 7-day deadline may incur additional charges.</span>
+                    <span data-lang="no">Eventuelle endringer forespurt etter 7-dagers fristen kan medføre ekstra kostnader.</span>
+                </li>
+            </ul>
+            <div class="highlight-box">
+                <strong>
+                    <span data-lang="en">Important:</span>
+                    <span data-lang="no">Viktig:</span>
+                </strong>
+                <span data-lang="en"> Late orders (less than 14 days) may be accepted subject to availability and may incur a rush fee of 20%.</span>
+                <span data-lang="no"> Sene bestillinger (mindre enn 14 dager) kan aksepteres avhengig av tilgjengelighet og kan medføre et hastgebyr på 20%.</span>
+            </div>
+        </div>
+
+        <!-- Quality and Ingredients -->
+        <div class="policy-section">
+            <h2>🥘 
+                <span data-lang="en">Quality and Ingredients</span>
+                <span data-lang="no">Kvalitet og råvarer</span>
+            </h2>
+            <ul>
+                <li>
+                    <span data-lang="en">We purchase <strong>all food fresh</strong> to ensure high quality in our dishes.</span>
+                    <span data-lang="no">Vi kjøper <strong>all mat fersk</strong> for å sikre høy kvalitet på våre retter.</span>
+                </li>
+                <li>
+                    <span data-lang="en">Fresh ingredients are ordered and purchased specifically for each event.</span>
+                    <span data-lang="no">Ferske ingredienser bestilles og kjøpes spesifikt for hvert arrangement.</span>
+                </li>
+                <li>
+                    <span data-lang="en">We cannot accept returns or refunds for food items once prepared.</span>
+                    <span data-lang="no">Vi kan ikke akseptere retur eller refusjon for matvarer når de er tilberedt.</span>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Deposit and Payment -->
+        <div class="policy-section">
+            <h2>💰 
+                <span data-lang="en">Deposit and Payment</span>
+                <span data-lang="no">Depositum og betaling</span>
+            </h2>
+            <ul>
+                <li>
+                    <span data-lang="en"><strong>A deposit of 50% of the total order value must be paid before we start work.</strong></span>
+                    <span data-lang="no"><strong>Et depositum på 50% av total bestillingsverdi må betales før vi starter arbeidet.</strong></span>
+                </li>
+                <li>
+                    <span data-lang="en">The deposit is binding and non-refundable in case of late cancellation.</span>
+                    <span data-lang="no">Depositumet er bindende og refunderes ikke ved sen kansellering.</span>
+                </li>
+                <li>
+                    <span data-lang="en"><strong>The remaining balance (50%) must be paid 3 days before the event.</strong></span>
+                    <span data-lang="no"><strong>Restbeløpet (50%) må betales 3 dager før event.</strong></span>
+                </li>
+                <li>
+                    <span data-lang="en">Payment can be made via Klarna, Visa, Mastercard, or Vipps.</span>
+                    <span data-lang="no">Betaling kan gjøres via Klarna, Visa, Mastercard eller Vipps.</span>
+                </li>
+                <li>
+                    <span data-lang="en">If full payment is not received 3 days before the event, we reserve the right to cancel the order and retain the deposit.</span>
+                    <span data-lang="no">Hvis full betaling ikke mottas 3 dager før event, forbeholder vi oss retten til å kansellere bestillingen og beholde depositumet.</span>
+                </li>
+            </ul>
+            <div class="warning-box">
+                <strong>
+                    <span data-lang="en">Payment Terms:</span>
+                    <span data-lang="no">Betalingsvilkår:</span>
+                </strong>
+                <span data-lang="en"> Failure to pay on time may result in order cancellation and loss of deposit.</span>
+                <span data-lang="no"> Manglende betaling i tide kan føre til kansellering av bestilling og tap av depositum.</span>
+            </div>
+        </div>
+
+        <!-- Cancellation -->
+        <div class="policy-section">
+            <h2>❌ 
+                <span data-lang="en">Cancellation Policy</span>
+                <span data-lang="no">Kanselleringspolicy</span>
+            </h2>
+            
+            <ul>
+                <li>
+                    <span data-lang="en"><strong>Cancellation must occur no later than 5 days before the event.</strong></span>
+                    <span data-lang="no"><strong>Kansellering må skje senest 5 dager før event.</strong></span>
+                </li>
+                <li>
+                    <span data-lang="en">If cancellation occurs after the deadline, we retain <strong>the entire deposit</strong>.</span>
+                    <span data-lang="no">Ved kansellering etter fristen beholder vi <strong>hele depositumet</strong>.</span>
+                </li>
+                <li>
+                    <span data-lang="en">If cancellation occurs <strong>3-5 days</strong> before the event, we may offer to move the order to a new date if available. The deposit will be transferred, but any additional costs must be covered by the customer.</span>
+                    <span data-lang="no">Ved kansellering <strong>3-5 dager</strong> før event kan vi tilby å flytte bestillingen til en ny dato dersom tilgjengelig. Depositum brukes da videre, men eventuelle ekstra kostnader må dekkes av kunden.</span>
+                </li>
+                <li>
+                    <span data-lang="en">If cancellation occurs <strong>within 3 days</strong> before the event, a <strong>cancellation fee</strong> applies to cover ingredients, labor, and planning already completed. This fee is 100% of the deposit plus 30% of the remaining balance.</span>
+                    <span data-lang="no">Ved kansellering <strong>innenfor 3 dager</strong> før event gjelder et <strong>kanselleringsgebyr</strong> for å dekke råvarer, arbeid og planlegging som allerede er gjennomført. Dette gebyret er 100% av depositumet pluss 30% av restbeløpet.</span>
+                </li>
+                <li>
+                    <span data-lang="en">If cancellation occurs <strong>within 24 hours</strong> before the event, the full order amount is due as ingredients have already been purchased and preparation has begun.</span>
+                    <span data-lang="no">Ved kansellering <strong>innenfor 24 timer</strong> før event er hele bestillingsbeløpet forfalt da ingredienser allerede er kjøpt og tilberedning har startet.</span>
+                </li>
+            </ul>
+
+            <div class="warning-box">
+                <strong>
+                    <span data-lang="en">Cancellation Timeline:</span>
+                    <span data-lang="no">Kanselleringsfrister:</span>
+                </strong>
+                <ul style="margin-top: 1rem;">
+                    <li>
+                        <span data-lang="en"><strong>More than 5 days before:</strong> Full deposit refund (minus 10% processing fee)</span>
+                        <span data-lang="no"><strong>Mer enn 5 dager før:</strong> Full refusjon av depositum (minus 10% behandlingsgebyr)</span>
+                    </li>
+                    <li>
+                        <span data-lang="en"><strong>3-5 days before:</strong> Deposit retained, but can be transferred to new date</span>
+                        <span data-lang="no"><strong>3-5 dager før:</strong> Depositum beholdes, men kan overføres til ny dato</span>
+                    </li>
+                    <li>
+                        <span data-lang="en"><strong>Within 3 days:</strong> Deposit + 30% of remaining balance</span>
+                        <span data-lang="no"><strong>Innenfor 3 dager:</strong> Depositum + 30% av restbeløp</span>
+                    </li>
+                    <li>
+                        <span data-lang="en"><strong>Within 24 hours:</strong> Full order amount due</span>
+                        <span data-lang="no"><strong>Innenfor 24 timer:</strong> Fullt bestillingsbeløp forfalt</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Our Cancellation -->
+        <div class="policy-section">
+            <h2>🔄 
+                <span data-lang="en">If We Must Cancel</span>
+                <span data-lang="no">Hvis Vi Må Kansellere</span>
+            </h2>
+            <ul>
+                <li>
+                    <span data-lang="en">If <strong>we</strong> must cancel due to unforeseen circumstances, the customer will receive <strong>full refund of the deposit</strong> and assistance in finding an alternative solution where possible.</span>
+                    <span data-lang="no">Dersom <strong>vi</strong> må kansellere av uforutsette årsaker, vil kunden få <strong>full refusjon av depositum</strong> og hjelp til å finne alternativ løsning der det er mulig.</span>
+                </li>
+                <li>
+                    <span data-lang="en">In case of force majeure (unexpected events beyond our control, such as extreme weather, illness, or government-imposed restrictions), we will work together to find a reasonable solution, such as a new date or partial refund.</span>
+                    <span data-lang="no">Ved force majeure (uventede hendelser utenfor vår kontroll, som ekstremvær, sykdom eller myndighetspålagte restriksjoner) vil vi sammen finne en rimelig løsning, som ny dato eller delvis refusjon.</span>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Legal Compliance -->
+        <div class="policy-section">
+            <h2>📜 
+                <span data-lang="en">Legal Compliance</span>
+                <span data-lang="no">Policy i henhold til norske lover</span>
+            </h2>
+            <ul>
+                <li>
+                    <span data-lang="en">All agreements follow <strong>Norwegian contract and consumer legislation</strong>.</span>
+                    <span data-lang="no">Alle avtaler følger <strong>norsk kontrakts- og forbrukerlovgivning</strong>.</span>
+                </li>
+                <li>
+                    <span data-lang="en">We process customer data in accordance with <strong>GDPR and Norwegian privacy legislation</strong>.</span>
+                    <span data-lang="no">Vi behandler kundedata i tråd med <strong>GDPR og norsk personvernlovgivning</strong>.</span>
+                </li>
+                <li>
+                    <span data-lang="en">Any disputes will be handled in accordance with <strong>Norwegian purchase law and contract law</strong>.</span>
+                    <span data-lang="no">Eventuelle konflikter håndteres i henhold til <strong>norsk kjøpslov og avtalelov</strong>.</span>
+                </li>
+                <li>
+                    <span data-lang="en">By placing an order, you agree to these terms and conditions.</span>
+                    <span data-lang="no">Ved å plassere en bestilling godtar du disse vilkårene og betingelsene.</span>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Additional Terms -->
+        <div class="policy-section">
+            <h2>📋 
+                <span data-lang="en">Additional Terms</span>
+                <span data-lang="no">Tilleggsvilkår</span>
+            </h2>
+            <ul>
+                <li>
+                    <span data-lang="en"><strong>Allergies and Dietary Requirements:</strong> Please inform us of any allergies or dietary requirements at the time of booking. We cannot be held responsible for allergic reactions if not informed in advance.</span>
+                    <span data-lang="no"><strong>Allergier og kostkrav:</strong> Vennligst informer oss om eventuelle allergier eller kostkrav ved bestilling. Vi kan ikke holdes ansvarlige for allergiske reaksjoner hvis ikke informert på forhånd.</span>
+                </li>
+                <li>
+                    <span data-lang="en"><strong>Event Changes:</strong> If the customer changes event details (date, time, location, number of guests) after confirmation, additional charges may apply.</span>
+                    <span data-lang="no"><strong>Endringer i arrangement:</strong> Hvis kunden endrer arrangementsdetaljer (dato, tid, sted, antall gjester) etter bekreftelse, kan ekstra kostnader påløpe.</span>
+                </li>
+                <li>
+                    <span data-lang="en"><strong>Delivery and Setup:</strong> Delivery and setup times are estimates. We are not responsible for delays due to traffic, weather, or other circumstances beyond our control.</span>
+                    <span data-lang="no"><strong>Levering og oppsett:</strong> Leverings- og oppsetttider er estimater. Vi er ikke ansvarlige for forsinkelser på grunn av trafikk, vær eller andre omstendigheter utenfor vår kontroll.</span>
+                </li>
+                <li>
+                    <span data-lang="en"><strong>Complaints:</strong> Any complaints must be reported within 24 hours of the event. We will work to resolve issues promptly and fairly.</span>
+                    <span data-lang="no"><strong>Klager:</strong> Eventuelle klager må rapporteres innen 24 timer etter arrangementet. Vi vil jobbe for å løse problemer raskt og rettferdig.</span>
+                </li>
+            </ul>
+        </div>
+
+        <div class="contact-info">
+            <h3>
+                <span data-lang="en">Questions About Our Policy?</span>
+                <span data-lang="no">Spørsmål om vår policy?</span>
+            </h3>
+            <p>
+                <span data-lang="en">Contact us at:</span>
+                <span data-lang="no">Kontakt oss på:</span>
+            </p>
+            <p style="margin-top: 1rem;">
+                <a href="tel:90714245">📞 90714245</a> | 
+                <a href="mailto:gambiandelights@gmail.com">✉️ gambiandelights@gmail.com</a>
+            </p>
+            <p style="margin-top: 1rem; font-size: 0.9rem; opacity: 0.9;">
+                <span data-lang="en">We're here to help!</span>
+                <span data-lang="no">Vi er her for å hjelpe!</span>
+            </p>
+        </div>
+    </div>
+
+    <script>
+        function switchLanguage(lang) {
+            document.body.classList.remove('lang-no', 'lang-en');
+            document.body.classList.add('lang-' + lang);
+            
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.getElementById('lang-' + lang).classList.add('active');
+            
+            localStorage.setItem('preferred-language', lang);
+        }
+
+        const savedLang = localStorage.getItem('preferred-language') || 'en';
+        switchLanguage(savedLang);
+    </script>
+</body>
+</html>
+
